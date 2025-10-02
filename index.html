@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --purple:#6c63ff; /* default brand color */
+      --purple:#3b2f8f; /* default brand color */
       --black:#000000;
       --text:#0f172a; /* slate-900 */
       --muted:#475569; /* slate-600 */
@@ -46,12 +46,16 @@
     .name{font-size:clamp(28px, 5vw, 48px); font-weight:800; letter-spacing:.2px}
     .meta{font-size:15px; opacity:.95}
     .cta{
-      margin-top:12px; display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
-      font-weight:700; font-size:15px; letter-spacing:.3px; text-transform:uppercase;
-      border-radius:999px; padding:.9rem 1.2rem; border:2px solid #fff; cursor:pointer;
-      background:transparent; color:#fff; transition: transform 160ms ease, background 160ms ease;
+      width:72px; height:72px; display:inline-flex; align-items:center; justify-content:center;
+      font-size:34px; border-radius:999px; border:2px solid #fff; cursor:pointer;
+      background:rgba(255,255,255,0.08); color:#fff; transition: transform 160ms ease, background 160ms ease;
     }
-    .cta:hover{transform:translateY(-2px);}
+    .cta:hover{transform:translateY(-2px); background:rgba(255,255,255,0.16)}
+    /* Ticker */
+    .ticker{overflow:hidden; width:100%; max-width:820px; margin-top:6px}
+    .track{display:inline-block; white-space:nowrap; animation:scroll 18s linear infinite}
+    .track span{margin-right:28px; opacity:.95; font-weight:600}
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
     .role{font-size:clamp(18px, 3.5vw, 28px); font-weight:700}
     .hint{font-size:13px; opacity:.8}
     .scroll{position:absolute; bottom:18px; left:50%; transform:translateX(-50%); font-size:12px; opacity:.9}
@@ -94,10 +98,16 @@
   <!-- Hero -->
   <main class="hero">
     <div class="hero-inner container">
-      <div class="name">Hi, I’m <span style="text-decoration:underline">Chaitali</span>.</div>
-      <div class="role" id="role">Business Analyst</div>
-      <button id="toggleBtn" class="cta" aria-label="Toggle role and theme">Toggle Role</button>
-      <div class="hint">Click the button to switch between Business Analyst ↔ Project Management and change the theme.</div>
+      <div class="name">Chaitali Shashi Shekar</div>
+      <!-- Moving ticker under name -->
+      <div class="ticker" aria-live="polite">
+        <div class="track" id="tickerTrack">
+          <!-- injected by JS -->
+        </div>
+      </div>
+      <!-- Cat button for theme/role toggle -->
+      <button id="toggleBtn" class="cta" aria-label="Toggle theme and featured role" title="Switch vibe 🐱">🐱</button>
+      <div class="hint">Click the cat to switch theme & featured role.</div>
       <a href="#projects" class="chip" style="margin-top:10px">↓ View Projects</a>
     </div>
     <div class="scroll">Scroll</div>
@@ -165,17 +175,29 @@
     // Footer year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Toggle role + theme
+    // Ticker data + renderer
+    const featuredRoles = ['Business Analyst','Project Management'];
+    const funAliases = ['Tour guide?','Foodie?','Self‑proclaimed food connoisseur'];
+    let featureIndex = 0; // BA first
+
+    const track = document.getElementById('tickerTrack');
+    function renderTrack(){
+      const items = [featuredRoles[featureIndex], ...funAliases, featuredRoles[(featureIndex+1)%2], ...funAliases];
+      const line = items.map(txt => `<span>${txt}</span>`).join('');
+      // duplicate once for seamless loop
+      track.innerHTML = line + line;
+    }
+    renderTrack();
+
+    // Toggle via cat button: theme + featured role
     const btn = document.getElementById('toggleBtn');
-    const role = document.getElementById('role');
-    let isBA = true; // Business Analyst first
     btn.addEventListener('click', () => {
-      isBA = !isBA;
-      role.textContent = isBA ? 'Business Analyst' : 'Project Management';
       document.body.classList.toggle('darkTheme');
+      featureIndex = (featureIndex + 1) % 2;
+      renderTrack();
     });
 
-    // Smooth scroll (native behavior works with anchor; this is just for older browsers)
+    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         const id = a.getAttribute('href');
