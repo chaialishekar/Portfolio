@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Current Studies — Energy Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f1b57'/%3E%3Cpath d='M32 10l5.5 10.8 12 1.8-8.7 8.5 2 11.9L32 37.6 21.2 43l2-11.9L14.5 22.6l12-1.8L32 10z' fill='%236d28d9' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="studies.css">
+</head>
+<body>
+  <header class="studies-header">
+    <div class="container head-inner">
+      <a class="brand" href="index.html" aria-label="Back to homepage">
+        ← Back Home
+      </a>
+      <h1 class="page-title">Current Studies — Energy Systems</h1>
+    </div>
+  </header>
+
+  <main class="container studies-wrap">
+    <p class="lead">
+      Ongoing exploration of grid dynamics and renewables: the <strong>duck curve</strong>,
+      <strong>solar PV</strong> capacity factors, and <strong>wind turbines</strong> at varying wind speeds.
+    </p>
+
+    <section class="studies-grid">
+      <!-- 1) Duck Curve -->
+      <article class="study-card">
+        <h2>Duck Curve 101</h2>
+        <p class="study-note">
+          Net load dips at mid-day because solar generation is high, then ramps steeply at sunset.
+        </p>
+        <div class="study-figure" role="img" aria-label="Chart illustrating the duck curve">
+          <svg viewBox="0 0 360 220" width="100%" height="100%">
+            <!-- gridlines -->
+            <g class="svg-line" stroke-width="1">
+              <line x1="40" y1="40"  x2="340" y2="40"/>
+              <line x1="40" y1="80"  x2="340" y2="80"/>
+              <line x1="40" y1="120" x2="340" y2="120"/>
+              <line x1="40" y1="160" x2="340" y2="160"/>
+            </g>
+
+            <!-- axes -->
+            <g class="svg-axis" stroke-width="2">
+              <line x1="40" y1="180" x2="340" y2="180"/>
+              <line x1="40" y1="30"  x2="40"  y2="180"/>
+            </g>
+
+            <!-- labels -->
+            <g class="svg-label">
+              <text x="40"  y="196">6 AM</text>
+              <text x="170" y="196">Noon</text>
+              <text x="300" y="196">6 PM</text>
+              <text x="6"   y="45">High</text>
+              <text x="10"  y="165">Low</text>
+              <text x="95"  y="22" font-weight="800">Net Load (with mid-day solar)</text>
+            </g>
+
+            <!-- “gross demand” reference (dashed) -->
+            <path d="M40 115 Q190 112 340 115" class="svg-ink" stroke-dasharray="5 5" stroke-width="2"/>
+
+            <!-- duck-curve area -->
+            <path d="M40 150 
+                     C100 140 130 110 180 90
+                     C220 75 260 100 300 140
+                     C320 155 335 165 340 168
+                     L340 180 L40 180 Z"
+                  class="svg-accent-fill"/>
+
+            <!-- duck-curve outline -->
+            <path d="M40 150 
+                     C100 140 130 110 180 90
+                     C220 75 260 100 300 140
+                     C320 155 335 165 340 168"
+                  class="svg-accent" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="study-tags">
+          <span class="study-tag">Ramping</span>
+          <span class="study-tag">Solar Penetration</span>
+          <span class="study-tag">Net Load</span>
+        </div>
+      </article>
+
+      <!-- 2) Solar PV -->
+      <article class="study-card">
+        <h2>Solar PV — Mid-day Peak</h2>
+        <p class="study-note">
+          Panels produce most around noon on clear days; orientation/tilt and clouds shift this window.
+        </p>
+        <div class="study-figure" role="img" aria-label="Stylized illustration of a solar array and sun">
+          <svg viewBox="0 0 360 220" width="100%" height="100%">
+            <!-- sun -->
+            <circle cx="300" cy="60" r="26" class="svg-accent-fill"/>
+            <circle cx="300" cy="60" r="26" class="svg-accent" stroke-width="2" fill="none"/>
+
+            <!-- ground -->
+            <rect x="0" y="170" width="360" height="50" class="svg-line" />
+
+            <!-- panel racks -->
+            <g transform="translate(40,140) skewX(-10)">
+              <!-- rack 1 -->
+              <rect x="0" y="0" width="90" height="50" rx="6" class="panel"/>
+              <g class="panel-grid">
+                <rect x="6"  y="6"  width="22" height="16" rx="2"/>
+                <rect x="34" y="6"  width="22" height="16" rx="2"/>
+                <rect x="62" y="6"  width="22" height="16" rx="2"/>
+                <rect x="6"  y="28" width="22" height="16" rx="2"/>
+                <rect x="34" y="28" width="22" height="16" rx="2"/>
+                <rect x="62" y="28" width="22" height="16" rx="2"/>
+              </g>
+            </g>
+
+            <g transform="translate(160,150) skewX(-10)">
+              <!-- rack 2 -->
+              <rect x="0" y="0" width="90" height="40" rx="6" class="panel"/>
+              <g class="panel-grid">
+                <rect x="6"  y="6"  width="22" height="12" rx="2"/>
+                <rect x="34" y="6"  width="22" height="12" rx="2"/>
+                <rect x="62" y="6"  width="22" height="12" rx="2"/>
+                <rect x="6"  y="22" width="22" height="12" rx="2"/>
+                <rect x="34" y="22" width="22" height="12" rx="2"/>
+                <rect x="62" y="22" width="22" height="12" rx="2"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="study-tags">
+          <span class="study-tag">Irradiance</span>
+          <span class="study-tag">Capacity Factor</span>
+          <span class="study-tag">Tilt &amp; Azimuth</span>
+        </div>
+      </article>
+
+      <!-- 3) Wind Turbines -->
+      <article class="study-card">
+        <h2>Wind Turbines — Cut-in to Rated</h2>
+        <p class="study-note">
+          Output rises with wind speed until rated power; control systems feather blades beyond that to protect the turbine.
+        </p>
+        <div class="study-figure" role="img" aria-label="Stylized wind farm with animated blades">
+          <svg viewBox="0 0 360 220" width="100%" height="100%">
+            <!-- horizon -->
+            <rect x="0" y="180" width="360" height="40" class="svg-line"/>
+
+            <!-- turbine group (x, scale) -->
+            <g transform="translate(80,40) scale(0.9)">
+              <!-- tower -->
+              <rect x="95" y="70" width="8" height="110" class="svg-ink"/>
+              <!-- nacelle -->
+              <rect x="89" y="60" width="20" height="12" class="svg-ink"/>
+              <!-- hub + blades -->
+              <g class="rotor">
+                <circle cx="99" cy="66" r="6" class="svg-accent-fill"/>
+                <g class="blade">
+                  <path d="M99 60 L99 30" class="svg-accent" stroke-width="3"/>
+                </g>
+                <g class="blade" transform="rotate(120,99,66)">
+                  <path d="M99 60 L99 30" class="svg-accent" stroke-width="3"/>
+                </g>
+                <g class="blade" transform="rotate(240,99,66)">
+                  <path d="M99 60 L99 30" class="svg-accent" stroke-width="3"/>
+                </g>
+              </g>
+            </g>
+
+            <!-- small background turbines -->
+            <g transform="translate(230,60) scale(0.6)" opacity=".75">
+              <rect x="95" y="70" width="7" height="110" class="svg-ink"/>
+              <rect x="89" y="60" width="18" height="12" class="svg-ink"/>
+              <g class="rotor">
+                <circle cx="99" cy="66" r="5" class="svg-accent-fill"/>
+                <g class="blade"><path d="M99 60 L99 34" class="svg-accent" stroke-width="3"/></g>
+                <g class="blade" transform="rotate(120,99,66)"><path d="M99 60 L99 34" class="svg-accent" stroke-width="3"/></g>
+                <g class="blade" transform="rotate(240,99,66)"><path d="M99 60 L99 34" class="svg-accent" stroke-width="3"/></g>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="study-tags">
+          <span class="study-tag">Cut-in</span>
+          <span class="study-tag">Rated</span>
+          <span class="study-tag">Feathering</span>
+        </div>
+      </article>
+    </section>
+
+    <aside class="study-aside">
+      <h3 class="aside-title">What I’m exploring next</h3>
+      <ul>
+        <li>Storage smoothing of evening ramps (4-hour vs 8-hour batteries)</li>
+        <li>Hybrid solar-wind co-location utilization</li>
+        <li>Grid-friendly dispatch with demand response</li>
+      </ul>
+    </aside>
+
+    <div class="back-row">
+      <a class="btn-back" href="index.html">← Back to portfolio</a>
+    </div>
+  </main>
+
+  <script>
+    // Apply saved theme to this standalone page
+    (function(){
+      const mode = localStorage.getItem('css_theme');
+      if(mode === 'dark') document.body.classList.add('darkTheme');
+      if(mode === 'sepia') document.body.classList.add('sepiaTheme');
+    })();
+
+    // Gentle rotor animation (CSS-free, requestAnimationFrame)
+    (function spin(){
+      const rotors = document.querySelectorAll('.rotor');
+      let t0;
+      function frame(ts){
+        if(!t0) t0 = ts;
+        const dt = (ts - t0) / 1000; // seconds
+        const deg = (dt * 60) % 360; // ~60°/s
+        rotors.forEach(r => r.setAttribute('transform', `rotate(${deg},99,66)`));
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>
