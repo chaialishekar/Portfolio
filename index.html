@@ -101,6 +101,38 @@
     .nav a:hover{ border-color:var(--accent); background:var(--hover-surface); }
     .header-spacer{ height:72px; }
 
+        /* --- Header: desktop keeps nav on the right --- */
+    .header-inner{ position:relative; }
+    .nav{ margin-left:auto; }
+
+    /* --- Mobile header --- */
+    @media (max-width: 680px){
+    .header-inner{ gap:10px; }
+    .nav-toggle{
+        display:inline-flex; margin-left:auto; width:40px; height:40px;
+        align-items:center; justify-content:center; font-size:20px; line-height:1;
+        border-radius:10px; border:1px solid var(--surface-border);
+        background:var(--surface); color:var(--surface-text);
+        box-shadow:0 4px 10px rgba(0,0,0,.08);
+    }
+    .nav{
+        position:absolute; right:12px; top:72px; /* drops below header, aligned right */
+        background:var(--surface); color:var(--surface-text);
+        border:1px solid var(--surface-border); border-radius:12px;
+        padding:8px; display:none; flex-direction:column; gap:6px;
+        box-shadow:0 12px 28px rgba(0,0,0,.18); z-index:1001;
+        min-width: 56vw; /* comfy tap targets */
+    }
+    .nav[aria-expanded="true"]{ display:flex; }
+    .nav a{ padding:.65rem .8rem; border-radius:8px; }
+    .nav a:hover{ background:var(--hover-surface); border-color:transparent; }
+    }
+
+    /* hide the button on wider screens */
+    @media (min-width: 681px){
+    .nav-toggle{ display:none; }
+}
+
     /* Chips & Buttons */
     .chip{
       padding:.30rem .7rem; border:1px solid var(--chip-border); border-radius:999px;
@@ -255,6 +287,82 @@
     #projects .actions{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     #projects .actions{ margin-top:auto; }
 
+    /* ===== SKILLS (creative, filterable, mobile-first) ===== */
+    section#skills{background:transparent}
+    .skills-wrap{padding:56px 0}
+    .skills-shell{
+    background:var(--surface); color:var(--surface-text);
+    border:1px solid var(--surface-border); border-radius:22px; padding:22px;
+    box-shadow:0 16px 40px rgba(0,0,0,.10);
+    }
+    .skills-head{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px}
+    .skills-title{font-size:clamp(22px,3.4vw,30px); font-weight:800; margin:0}
+    .skills-meta{font-size:13px; opacity:.85}
+
+    /* Segmented filter */
+    .seg{
+    display:flex; align-items:center; gap:8px;
+    background:var(--hover-surface);
+    border:1px solid var(--surface-border); border-radius:12px; padding:6px;
+    }
+    .seg button{
+    appearance:none; border:0; background:transparent; color:var(--surface-text);
+    font-weight:800; padding:.55rem .9rem; border-radius:10px; cursor:pointer;
+    transition:transform .12s ease, box-shadow .16s ease, background .16s ease;
+    }
+    .seg button[aria-pressed="true"]{
+    background:var(--accent); color:var(--accent-contrast);
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+    }
+
+    /* Grid of animated chips */
+    .chip-grid{
+    display:grid; gap:10px; margin-top:16px;
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    }
+    .skill-chip{
+    position:relative;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    padding:.70rem .8rem; border-radius:12px;
+    background:var(--surface); color:var(--surface-text);
+    border:1px solid var(--surface-border);
+    box-shadow:0 6px 14px rgba(0,0,0,.08);
+    font-weight:700; font-size:14px;
+    transform:translateY(0) scale(1); opacity:1;
+    transition:transform .16s ease, box-shadow .16s ease, opacity .18s ease;
+    }
+    .skill-chip:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.14); }
+
+    /* Left color sliver by category (adds visual structure) */
+    .skill-chip::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:6px; border-radius:12px 0 0 12px; opacity:.95;
+    }
+    :root{ --skill-tech:#3b82f6; --skill-pro:#f59e0b; --skill-cert:#8b5cf6; }
+    body.darkTheme{ --skill-tech:#60a5fa; --skill-pro:#fbbf24; --skill-cert:#a78bfa; }
+    body.sepiaTheme{ --skill-tech:#5a8ad6; --skill-pro:#d6993a; --skill-cert:#8e73d6; }
+
+    .skill-chip[data-group="tech"]::before{ background:var(--skill-tech); }
+    .skill-chip[data-group="pro"]::before{  background:var(--skill-pro); }
+    .skill-chip[data-group="cert"]::before{ background:var(--skill-cert); }
+
+    /* Enter animation */
+    @keyframes chip-pop{0%{transform:translateY(6px) scale(.96);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+    .skill-chip.reveal{ animation:chip-pop .35s ease both; }
+
+    /* hide via [hidden] (for filtering) */
+    [hidden]{ display:none !important; }
+
+    /* Small helper row titles (mobile tidy) */
+    .skill-subtitle{
+    grid-column:1 / -1; margin:12px 2px 4px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.75;
+    }
+
+    /* Tighten on very small screens */
+    @media (max-width:520px){
+    .seg{width:100%; justify-content:space-between}
+    .skills-head{align-items:flex-start}
+    }
+
     /* CERTIFICATIONS */
     section#certifications{background:transparent}
     .certs-wrap{padding:56px 0}
@@ -287,21 +395,30 @@
 </head>
 <body>
   <!-- HEADER -->
-  <header class="site-header" role="banner">
+    <header class="site-header" role="banner">
     <div class="header-inner container">
-      <a class="brand" href="#">
+        <a class="brand" href="#">
         <span class="brand-mark">CS</span>
         <span>Chaitali Shashi Shekar</span>
-      </a>
-      <nav class="nav" aria-label="Primary">
+        </a>
+
+        <!-- mobile menu button (right side) -->
+        <button class="nav-toggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Open menu">
+        ☰
+        </button>
+
+        <!-- primary navigation -->
+        <nav class="nav" id="primaryNav" aria-label="Primary" aria-expanded="false">
         <a href="#about">About</a>
         <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
         <a href="#certifications">Certifications</a>
         <a href="#connect">Contact</a>
-      </nav>
+        </nav>
     </div>
-  </header>
-  <div class="header-spacer" aria-hidden="true"></div>
+    </header>
+    <div class="header-spacer" aria-hidden="true"></div>
+
 
   <!-- HERO -->
   <main class="hero">
@@ -320,7 +437,6 @@
           </div>
           <div class="knob">
             <img class="cat-img" src="cat image.png" alt="Theme cat" />
-            
           </div>
         </div>
       </div>
@@ -337,7 +453,7 @@
           </div>
           <div class="about-text">
             <h2>About Me</h2>
-            <p>Hi, I’m Chaitali, a graduate student in Engineering Management (Analytics) at NC State. I turn large datasets into clear, KPI-driven insights and build dashboards and models that leaders actually use. I’m passionate about end-to-end project lifecycles and solving client-centric problems. I love to learn and put knowledge into action. Outside of work, I love exploring new places, cultures and going on a hike during the weekends</p>
+            <p>Hi, I’m Chaitali, a graduate student in Engineering Management (Analytics) at NC State. I turn large datasets into clear, KPI-driven insights and build dashboards and models that leaders actually use. I’m passionate about end-to-end project lifecycles and solving client-centric problems. I love to learn and put knowledge into action. Outside of work, I love exploring new places, cultures and going on a hike during</p>
           </div>
         </div>
       </div>
@@ -347,7 +463,7 @@
   <!-- PROJECTS -->
   <section id="projects">
     <div class="container projects-wrap">
-      <h2 class="section-title">Projects</h2>
+      <h2 class="section-title">Projects & Experience</h2>
       <div style="font-size:12px;opacity:.8;margin:-6px 0 14px;"></div>
 
       <div class="projects-grid">
@@ -415,7 +531,7 @@
           <div class="t-card">
             <img class="proj-media" src="NLP.jpg" alt="Time-series and NLP pipelines">
             <div class="t-meta"><span class="chip filled" style="margin-right:6px;"></span> Data Science</div>
-            <h3>Data Science Applied Research (Part-time)</h3>
+            <h3>Data Science Applied Research (Part-time) — Learnbay</h3>
             <p>Built supervised &amp; time-series models (LSTM) and NLP pipelines; improved demand &amp; financial KPI prediction accuracy by <strong>15%</strong>.</p>
             <div class="tags"><span class="tag">Python</span><span class="tag">Neural Networks</span><span class="tag">Time Series</span></div>
           </div>
@@ -434,6 +550,48 @@
       </div>
     </div>
   </section>
+    <!-- SKILLS -->
+    <section id="skills">
+    <div class="container skills-wrap">
+        <div class="skills-shell">
+        <div class="skills-head">
+            <h2 class="skills-title">Skills Studio</h2>
+            <div class="seg" role="tablist" aria-label="Filter skills">
+            <button type="button" role="tab" class="seg-btn" data-cat="all" aria-pressed="true">All</button>
+            <button type="button" role="tab" class="seg-btn" data-cat="tech">Tech Tools</button>
+            <button type="button" role="tab" class="seg-btn" data-cat="pro">Professional</button>
+            </div>
+        </div>
+        <div class="skills-meta" aria-live="polite">
+            Showing <span id="skillsCount">0</span> items
+        </div>
+
+        <div class="chip-grid" id="skillsGrid">
+            <!-- Tech Tools -->
+            <div class="skill-subtitle">Tech Tools</div>
+            <div class="skill-chip" data-group="tech">MS Project</div>
+            <div class="skill-chip" data-group="tech">Power BI</div>
+            <div class="skill-chip" data-group="tech">Tableau</div>
+            <div class="skill-chip" data-group="tech">Excel</div>
+            <div class="skill-chip" data-group="tech">SQL</div>
+            <div class="skill-chip" data-group="tech">Python</div>
+            <div class="skill-chip" data-group="tech">R</div>
+            <div class="skill-chip" data-group="tech">Docker</div>
+            <div class="skill-chip" data-group="tech">AWS</div>
+            <div class="skill-chip" data-group="tech">Snowflake</div>
+
+            <!-- Professional Skills -->
+            <div class="skill-subtitle">Professional Skills</div>
+            <div class="skill-chip" data-group="pro">Lifecycle Management</div>
+            <div class="skill-chip" data-group="pro">KPI Assessment</div>
+            <div class="skill-chip" data-group="pro">Risk Analysis</div>
+            <div class="skill-chip" data-group="pro">Project Economics</div>
+            <div class="skill-chip" data-group="pro">Stakeholder Engagement</div>
+
+        </div>
+        </div>
+    </div>
+    </section>
 
   <!-- CERTIFICATIONS -->
   <section id="certifications">
@@ -604,6 +762,79 @@
   </footer>
 
   <script>
+  
+    // Mobile nav toggle
+    (function(){
+    const btn = document.querySelector('.nav-toggle');
+    const nav = document.getElementById('primaryNav');
+    if(!btn || !nav) return;
+
+    function setOpen(open){
+        btn.setAttribute('aria-expanded', String(open));
+        nav.setAttribute('aria-expanded', String(open));
+    }
+
+    btn.addEventListener('click', ()=>{
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        setOpen(!open);
+    });
+
+    // Close when a link is tapped
+    nav.querySelectorAll('a').forEach(a => a.addEventListener('click', ()=> setOpen(false)));
+
+    // Click outside to close
+    document.addEventListener('click', (e)=>{
+        if(e.target === btn || nav.contains(e.target)) return;
+        setOpen(false);
+    });
+
+    // Escape to close
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') setOpen(false); });
+    })();
+
+
+
+    // ===== Skills filter + entrance animation =====
+    (function(){
+    const grid = document.getElementById('skillsGrid');
+    if(!grid) return;
+
+    const chips = Array.from(grid.querySelectorAll('.skill-chip'));
+    const btns  = Array.from(document.querySelectorAll('#skills .seg-btn'));
+    const countEl = document.getElementById('skillsCount');
+
+    // IntersectionObserver for fun pop-in
+    const io = new IntersectionObserver((entries)=>{
+        entries.forEach(en => {
+        if(en.isIntersecting){ en.target.classList.add('reveal'); io.unobserve(en.target); }
+        });
+    }, {threshold:.2});
+    chips.forEach(ch => io.observe(ch));
+
+    // Filter logic
+    function applyFilter(cat){
+        let shown = 0;
+        chips.forEach(chip => {
+        const show = (cat === 'all') || (chip.dataset.group === cat);
+        chip.toggleAttribute('hidden', !show);
+        if(show) shown++;
+        });
+        if(countEl) countEl.textContent = shown;
+    }
+
+    btns.forEach(b => {
+        b.addEventListener('click', ()=>{
+        btns.forEach(x => x.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        applyFilter(b.dataset.cat);
+        });
+    });
+
+    // Initial state
+    applyFilter('all');
+    })();
+
+
     // Footer year
     const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
 
@@ -716,6 +947,7 @@
         let x = Math.max(half, Math.min(rect.width - half, e.clientX - rect.left));
         applyTheme(nearestMode(x));
       });
+    
 
       // keyboard support
       slider.tabIndex = 0;
