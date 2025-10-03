@@ -65,6 +65,26 @@
       --header-blur-bg: rgba(234,221,207,.75);
     }
 
+    /* Current Studies link box */
+    .cta-box{
+      display:block;
+      background:var(--surface);
+      color:var(--surface-text);
+      border:1px solid var(--surface-border);
+      border-radius:22px;
+      padding:20px 24px;
+      text-align:center;
+      box-shadow:0 10px 26px rgba(0,0,0,.10);
+      transition:transform 120ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    .cta-box:hover{
+      transform:translateY(-2px);
+      border-color:var(--accent);
+      box-shadow:0 14px 30px rgba(0,0,0,.14);
+    }
+    .cta-box .section-title{ margin:0; }  /* keep same title style */
+
+
     /* BASE */
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -694,6 +714,14 @@
     </div>
   </section>
 
+<!-- CURRENT STUDIES (title-only link) -->
+<section id="current-studies-link">
+  <div class="container" style="padding:24px 0;">
+    <a href="current-studies.html" class="cta-box" aria-label="Open Current Studies page">
+      <h2 class="section-title">Current Studies</h2>
+    </a>
+  </div>
+</section>
 
 
 
