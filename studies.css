@@ -1,0 +1,123 @@
+/* ===== THEME VARIABLES (same as your main site) ===== */
+:root{
+  --bg:#a9cceb; --text:#171616;
+  --surface:#ffffff; --surface-text:#0f172a; --surface-border:rgba(0,0,0,.12);
+  --chip-border:rgba(0,0,0,.35); --line:rgba(0,0,0,.25); --hover-surface:rgba(0,0,0,.06);
+  --tag-bg:rgba(0,0,0,.06);
+  --accent:#28add9; --accent-soft:rgba(21,120,166,.25); --accent-contrast:#ffffff;
+  --header-blur-bg:rgba(255,255,255,.75);
+}
+body.darkTheme{
+  --bg:#1b2a43; --text:#ffffff;
+  --surface:#e5e7eb; --surface-text:#142335; --surface-border:rgba(0,0,0,.14);
+  --chip-border:rgba(255,255,255,.45); --line:rgba(255,255,255,.35);
+  --hover-surface:rgba(0,0,0,.08); --tag-bg:rgba(0,0,0,.08);
+  --accent:#60c1e8; --accent-soft:rgba(57,223,245,.35); --accent-contrast:#1f1b57;
+  --header-blur-bg:rgba(229,231,235,.75);
+}
+body.sepiaTheme{
+  --bg:#5b4636; --text:#f6efe7;
+  --surface:#eaddcf; --surface-text:#2b1f16; --surface-border:rgba(0,0,0,.18);
+  --chip-border:rgba(255,255,255,.45); --line:rgba(255,255,255,.35);
+  --hover-surface:rgba(0,0,0,.08); --tag-bg:rgba(0,0,0,.08);
+  --accent:#c08a54; --accent-soft:rgba(192,138,84,.35); --accent-contrast:#1f130c;
+  --header-blur-bg:rgba(234,221,207,.75);
+}
+
+/* ===== BASE ===== */
+*{ box-sizing:border-box }
+html,body{ height:100% }
+body{
+  margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg); color:var(--text);
+  transition: background 280ms ease, color 280ms ease;
+}
+a{ color:inherit; text-decoration:none }
+.container{ width:min(1100px,92vw); margin-inline:auto }
+
+/* ===== HEADER ===== */
+.studies-header{
+  position:sticky; top:0; z-index:10;
+  backdrop-filter:saturate(180%) blur(10px);
+  -webkit-backdrop-filter:saturate(180%) blur(10px);
+  background:var(--header-blur-bg);
+  border-bottom:1px solid var(--surface-border);
+}
+.head-inner{
+  height:64px; display:flex; align-items:center; gap:16px;
+}
+.brand{
+  font-weight:800; padding:.4rem .7rem; border-radius:10px;
+  border:1px solid transparent;
+}
+.brand:hover{ background:var(--hover-surface); border-color:var(--accent); }
+.page-title{
+  margin:0; font-size:clamp(18px,3.2vw,24px); font-weight:800;
+}
+
+/* ===== CONTENT SECTIONS ===== */
+.studies-wrap{ padding:36px 0 56px }
+.lead{
+  margin:0 0 18px; font-size:15.5px; line-height:1.65; opacity:.95;
+}
+
+.studies-grid{
+  display:grid; gap:20px; grid-template-columns:repeat(3,1fr);
+}
+@media (max-width: 980px){ .studies-grid{ grid-template-columns:1fr; } }
+
+.study-card{
+  background:var(--surface); color:var(--surface-text);
+  border:1px solid var(--surface-border);
+  border-radius:16px; padding:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.10);
+  transition: transform .14s ease, box-shadow .16s ease, border-color .16s ease,
+              background 280ms ease, color 280ms ease;
+  display:flex; flex-direction:column; gap:10px;
+}
+.study-card:hover{ transform:translateY(-2px); border-color:var(--accent); box-shadow:0 14px 30px rgba(0,0,0,.14); }
+.study-card h2{ margin:0 0 2px; font-size:18px }
+
+.study-note{ margin:0; font-size:14px; line-height:1.55; opacity:.95 }
+
+.study-figure{
+  aspect-ratio: 16 / 9;
+  background:var(--hover-surface);
+  border:1px solid var(--surface-border);
+  border-radius:12px; overflow:hidden;
+  display:grid; place-items:center;
+}
+
+.study-tags{ display:flex; gap:6px; flex-wrap:wrap }
+.study-tag{
+  font-size:12px; padding:.18rem .55rem; border-radius:999px;
+  border:1px solid var(--surface-border); background:var(--tag-bg);
+}
+
+/* SVG helpers */
+.svg-line{ stroke:var(--line); fill:none }
+.svg-axis{ stroke:var(--surface-text); opacity:.75; fill:none }
+.svg-label{ fill:var(--surface-text); font:600 10px/1 Inter,system-ui,sans-serif }
+.svg-ink{ stroke:var(--surface-text); fill:none }
+.svg-accent{ stroke:var(--accent); fill:none }
+.svg-accent-fill{ fill: color-mix(in oklab, var(--accent) 24%, transparent); }
+
+/* Solar panel styling */
+.panel{ fill: color-mix(in oklab, var(--surface-text) 8%, transparent); stroke:var(--surface-text); opacity:.9 }
+.panel-grid rect{ fill: color-mix(in oklab, var(--accent) 26%, transparent); stroke: var(--surface-text); opacity:.9 }
+
+/* Aside */
+.study-aside{
+  margin-top:26px; background:var(--surface); color:var(--surface-text);
+  border:1px solid var(--surface-border); border-radius:16px; padding:16px;
+}
+.aside-title{ margin:0 0 8px; font-size:16px; font-weight:800 }
+
+/* Back link */
+.back-row{ display:flex; justify-content:center; margin-top:16px }
+.btn-back{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.55rem .9rem; border-radius:10px;
+  border:1px solid var(--surface-border); color:var(--surface-text);
+}
+.btn-back:hover{ background:var(--hover-surface); border-color:var(--accent); }
