@@ -432,6 +432,17 @@
     footer{background:transparent; padding:28px 0 40px}
     .foot{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center }
     .foot-meta{font-size:13px; opacity:.9}
+
+        /* Fix: let the knob render outside the thin track */
+    .tri-toggle .track{
+    overflow: visible;            /* was: overflow:hidden */
+    }
+
+    /* Ensure knob sits above the rod/track visually */
+    .tri-toggle .knob{
+    z-index: 2;
+    }
+
   </style>
 </head>
 <body>
