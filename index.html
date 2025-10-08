@@ -891,7 +891,7 @@
     /* Tri-mode theme control (Light | Dark | Brown) on a rectangular rod + leaves only when switching to sepia */
     (function(){
       const THEME_KEY = 'css_theme';
-      const THEMES = ['light','dark','sepia']; // indices 0..2
+      const THEMES = ['light','sepia']; // indices 0..2
 
       const body   = document.body;
       const slider = document.getElementById('themeSlider');
@@ -901,8 +901,8 @@
       const knob   = slider.querySelector('.knob');
 
       function setKnobSkin(mode){
-        const bg = { light:'#ffffff', dark:'#000000', sepia:'#c08a54' }[mode];
-        const bc = { light:'rgba(0,0,0,.25)', dark:'rgba(255,255,255,.65)', sepia:'rgba(0,0,0,.35)' }[mode];
+        const bg = { light:'#ffffff', sepia:'#c08a54' }[mode];
+        const bc = { light:'rgba(0,0,0,.25)', sepia:'rgba(0,0,0,.35)' }[mode];
         knob.style.background = bg;
         knob.style.borderColor = bc;
       }
@@ -919,25 +919,7 @@
         knob.style.transform = `translate(${Math.round(x)}px, -50%)`;
       }
 
-      // onlyBurst controls the 🍁 animation on user-triggered switches (not init)
-      function applyTheme(mode, {onlyBurstOnUser=false} = {}){
-        const wasSepia = body.classList.contains('sepiaTheme');
 
-        body.classList.remove('darkTheme','sepiaTheme');
-        if(mode === 'dark')  body.classList.add('darkTheme');
-        if(mode === 'sepia') body.classList.add('sepiaTheme');
-
-        localStorage.setItem(THEME_KEY, mode);
-        slider.dataset.mode = mode;
-        slider.setAttribute('aria-valuenow', THEMES.indexOf(mode));
-        positionKnob(mode);
-        setKnobSkin(mode);
-
-        // 🍁 Only when switching *to* sepia by user (not on page load)
-        if(mode === 'sepia' && onlyBurstOnUser && !wasSepia){
-          burstLeaves(28);
-        }
-      }
 
       function nearestIdxFromRatio(ratio){
         return Math.max(0, Math.min(2, Math.round(ratio * 2))); // 0..2
