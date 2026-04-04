@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WolfPark — Smart Parking Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --wolf-red: #CC0000;
+    --wolf-red-dark: #8B0000;
+    --wolf-red-bright: #FF2020;
+    --wolf-red-dim: rgba(204,0,0,0.15);
+    --wolf-black: #0A0A0A;
+    --wolf-surface: #141414;
+    --wolf-card: #1E1E1E;
+    --wolf-border: rgba(204,0,0,0.25);
+    --wolf-text: #F0EEE8;
+    --wolf-muted: #888;
+    --wolf-green: #22C55E;
+    --wolf-yellow: #EAB308;
+    --avail-green: #1DB954;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--wolf-black);
+    color: var(--wolf-text);
+    min-height: 100vh;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* HEADER */
+  .wp-header {
+    background: linear-gradient(180deg, #1a0000 0%, var(--wolf-black) 100%);
+    border-bottom: 1px solid var(--wolf-border);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .wp-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 34px;
+    letter-spacing: 2px;
+    color: var(--wolf-text);
+  }
+  .wp-logo span { color: var(--wolf-red); }
+
+  .wp-live {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--avail-green);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .wp-live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--avail-green);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  /* NAV */
+  .wp-nav {
+    display: flex;
+    gap: 6px;
+    padding: 14px 28px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: var(--wolf-black);
+  }
+
+  .wp-tab {
+    padding: 8px 18px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wolf-muted);
+    cursor: pointer;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .wp-tab:hover { color: var(--wolf-text); }
+  .wp-tab.active { color: var(--wolf-red); border-bottom-color: var(--wolf-red); }
+
+  /* BODY */
+  .wp-body { padding: 24px 28px; }
+
+  /* STATS ROW */
+  .wp-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .wp-stat {
+    background: var(--wolf-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .wp-stat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--wolf-red);
+    border-radius: 10px 0 0 10px;
+  }
+  .wp-stat.green::before  { background: var(--avail-green); }
+  .wp-stat.yellow::before { background: var(--wolf-yellow); }
+  .wp-stat.blue::before   { background: #3B82F6; }
+
+  .wp-stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--wolf-muted);
+    margin-bottom: 8px;
+  }
+
+  .wp-stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--wolf-text);
+  }
+
+  .wp-stat-sub { font-size: 11px; color: var(--wolf-muted); margin-top: 4px; }
+
+  .wp-stat-trend { font-size: 11px; margin-top: 4px; }
+  .wp-stat-trend.up { color: var(--avail-green); }
+  .wp-stat-trend.dn { color: var(--wolf-red); }
+
+  /* FILTER BAR */
+  .wp-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .wp-filter-btn {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: var(--wolf-muted);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .wp-filter-btn:hover { border-color: var(--wolf-red); color: var(--wolf-red); }
+  .wp-filter-btn.active { background: var(--wolf-red); color: #fff; border-color: var(--wolf-red); }
+
+  /* MAIN GRID */
+  .wp-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  /* CARDS */
+  .wp-card {
+    background: var(--wolf-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .wp-card-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .wp-card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: var(--wolf-text);
+  }
+
+  /* BADGES */
+  .wp-badge {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+  .wp-badge.red    { background: var(--wolf-red-dim); color: #FF6B6B; border: 1px solid rgba(204,0,0,0.3); }
+  .wp-badge.green  { background: rgba(34,197,94,0.12); color: var(--avail-green); border: 1px solid rgba(34,197,94,0.25); }
+  .wp-badge.yellow { background: rgba(234,179,8,0.12); color: var(--wolf-yellow); border: 1px solid rgba(234,179,8,0.25); }
+
+  /* LOT LIST */
+  .wp-lot-list { padding: 8px 0; }
+
+  .wp-lot {
+    display: flex;
+    align-items: center;
+    padding: 11px 18px;
+    gap: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .wp-lot:hover { background: rgba(255,255,255,0.03); }
+  .wp-lot:last-child { border-bottom: none; }
+
+  .wp-lot-status {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .wp-lot-status.green  { background: var(--avail-green); box-shadow: 0 0 6px rgba(29,185,84,0.5); }
+  .wp-lot-status.yellow { background: var(--wolf-yellow); box-shadow: 0 0 6px rgba(234,179,8,0.5); }
+  .wp-lot-status.red    { background: #EF4444; box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+
+  .wp-lot-name { flex: 1; font-size: 13px; font-weight: 500; color: var(--wolf-text); }
+
+  .wp-lot-type {
+    font-size: 10px;
+    color: var(--wolf-muted);
+    background: rgba(255,255,255,0.06);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  .wp-lot-spots {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--wolf-text);
+    min-width: 34px;
+    text-align: right;
+  }
+
+  .wp-lot-bar-wrap {
+    width: 70px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .wp-lot-bar { height: 100%; border-radius: 2px; }
+  .wp-lot-bar.green  { background: var(--avail-green); }
+  .wp-lot-bar.yellow { background: var(--wolf-yellow); }
+  .wp-lot-bar.red    { background: #EF4444; }
+
+  /* PERSONAS */
+  .wp-persona-list { padding: 10px 0; }
+
+  .wp-persona {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+  .wp-persona:hover { background: rgba(255,255,255,0.03); }
+  .wp-persona:last-child { border-bottom: none; }
+
+  .wp-persona-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .wp-persona-info { flex: 1; }
+  .wp-persona-name { font-size: 13px; font-weight: 500; color: var(--wolf-text); }
+  .wp-persona-role { font-size: 11px; color: var(--wolf-muted); }
+
+  .wp-persona-need {
+    font-size: 10px;
+    color: var(--wolf-muted);
+    background: rgba(255,255,255,0.05);
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* BOTTOM GRID */
+  .wp-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+  }
+
+  .wp-chart-wrap {
+    position: relative;
+    padding: 16px 18px;
+    height: 200px;
+  }
+
+  /* EVENTS */
+  .wp-event {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .wp-event:last-child { border-bottom: none; }
+
+  .wp-event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .wp-event-name { font-size: 12px; font-weight: 500; color: var(--wolf-text); flex: 1; }
+  .wp-event-time { font-size: 11px; color: var(--wolf-muted); white-space: nowrap; }
+
+  .wp-event-impact {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .wp-event-impact.high { background: var(--wolf-red-dim); color: #FF6B6B; }
+  .wp-event-impact.med  { background: rgba(234,179,8,0.12); color: var(--wolf-yellow); }
+  .wp-event-impact.low  { background: rgba(59,130,246,0.12); color: #60A5FA; }
+
+  /* IMPACT PANEL */
+  .wp-impact-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px 18px;
+  }
+
+  .wp-impact-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 12px 14px;
+    border-left: 2px solid var(--wolf-red);
+  }
+
+  .wp-impact-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--wolf-red);
+    line-height: 1;
+  }
+
+  .wp-impact-label { font-size: 11px; color: var(--wolf-muted); margin-top: 3px; }
+
+  /* PRIORITY LIST */
+  .wp-priority {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .wp-priority.must   { background: rgba(34,197,94,0.15); color: #4ADE80; }
+  .wp-priority.should { background: rgba(234,179,8,0.15); color: #FDE047; }
+  .wp-priority.could  { background: rgba(255,255,255,0.08); color: #aaa; }
+
+  /* FOOTER */
+  .wp-footer {
+    text-align: center;
+    padding: 24px 28px;
+    font-size: 11px;
+    color: var(--wolf-muted);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-top: 8px;
+  }
+  .wp-footer span { color: var(--wolf-red); }
+
+  /* SQL SCHEMA */
+  .wp-sql-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .wp-sql-table {
+    background: var(--wolf-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .wp-sql-table-header {
+    background: rgba(204,0,0,0.18);
+    border-bottom: 1px solid rgba(204,0,0,0.3);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .wp-sql-table-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    color: #FF6B6B;
+  }
+  .wp-sql-table-icon { width: 8px; height: 8px; border-radius: 50%; background: var(--wolf-red); flex-shrink: 0; }
+  .wp-sql-col {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 11.5px;
+    gap: 8px;
+  }
+  .wp-sql-col:last-child { border-bottom: none; }
+  .wp-sql-col-name { color: var(--wolf-text); font-weight: 500; font-family: monospace; flex: 1; }
+  .wp-sql-col-type { color: #60A5FA; font-size: 10px; font-family: monospace; white-space: nowrap; }
+  .wp-sql-pk { font-size: 9px; font-weight: 700; background: rgba(234,179,8,0.15); color: #FDE047; padding: 1px 5px; border-radius: 3px; }
+  .wp-sql-fk { font-size: 9px; font-weight: 700; background: rgba(59,130,246,0.15); color: #93C5FD; padding: 1px 5px; border-radius: 3px; }
+  .wp-sql-query { background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 18px 20px; margin-bottom: 14px; }
+  .wp-sql-query-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--wolf-red); margin-bottom: 10px; font-weight: 600; }
+  .wp-sql-code { font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.9; color: #ccc; white-space: pre; overflow-x: auto; }
+  .sql-kw  { color: #FF6B6B; }
+  .sql-fn  { color: #C084FC; }
+  .sql-str { color: #86EFAC; }
+  .sql-com { color: #555; font-style: italic; }
+  .sql-col { color: #93C5FD; }
+  .sql-num { color: #FDE047; }
+  .wp-efficiency-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .wp-stats-row { grid-template-columns: repeat(2, 1fr); }
+    .wp-grid { grid-template-columns: 1fr; }
+    .wp-bottom-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 500px) {
+    .wp-stats-row { grid-template-columns: 1fr 1fr; }
+    .wp-body { padding: 16px; }
+    .wp-header { padding: 14px 16px; }
+    .wp-nav { padding: 10px 16px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="wp-header">
+  <div class="wp-logo">Wolf<span>Park</span></div>
+  <div style="display:flex;align-items:center;gap:24px;">
+    <div class="wp-live"><div class="wp-live-dot"></div>Live Feed</div>
+    <div style="font-size:12px;color:var(--wolf-muted);">NC State University</div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="wp-nav">
+  <button class="wp-tab active" onclick="setTab(this)">Overview</button>
+  <button class="wp-tab" onclick="setTab(this)">Lot Map</button>
+  <button class="wp-tab" onclick="setTab(this)">Personas</button>
+  <button class="wp-tab" onclick="setTab(this)">Features</button>
+  <button class="wp-tab" onclick="setTab(this)">Impact</button>
+</div>
+
+<div class="wp-body">
+
+  <!-- STAT CARDS -->
+  <div class="wp-stats-row">
+    <div class="wp-stat green">
+      <div class="wp-stat-label">Available Spots</div>
+      <div class="wp-stat-val" id="avail-count">847</div>
+      <div class="wp-stat-trend up" id="avail-trend">↑ 12 from 5 min ago</div>
+    </div>
+    <div class="wp-stat yellow">
+      <div class="wp-stat-label">Limited Capacity</div>
+      <div class="wp-stat-val">6</div>
+      <div class="wp-stat-sub">Lots near capacity</div>
+    </div>
+    <div class="wp-stat">
+      <div class="wp-stat-label">Search Time Saved</div>
+      <div class="wp-stat-val">65<span style="font-size:18px;color:var(--wolf-muted);">%</span></div>
+      <div class="wp-stat-trend up">↑ projected reduction</div>
+    </div>
+    <div class="wp-stat blue">
+      <div class="wp-stat-label">On-Time Arrivals</div>
+      <div class="wp-stat-val">+35<span style="font-size:18px;color:var(--wolf-muted);">%</span></div>
+      <div class="wp-stat-sub">30–40% increase target</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="wp-filter-bar">
+    <button class="wp-filter-btn active" onclick="filterLots(this,'All')">All Lots</button>
+    <button class="wp-filter-btn" onclick="filterLots(this,'Student')">Student (S)</button>
+    <button class="wp-filter-btn" onclick="filterLots(this,'Faculty')">Faculty</button>
+    <button class="wp-filter-btn" onclick="filterLots(this,'Staff')">Staff</button>
+    <button class="wp-filter-btn" onclick="filterLots(this,'ADA')">ADA</button>
+    <button class="wp-filter-btn" onclick="filterLots(this,'Contractor')">Contractor</button>
+  </div>
+
+  <!-- MAIN GRID: Lots + Personas -->
+  <div class="wp-grid">
+
+    <!-- LOT AVAILABILITY -->
+    <div class="wp-card">
+      <div class="wp-card-header">
+        <div class="wp-card-title">Lot Availability</div>
+        <div style="display:flex;gap:8px;">
+          <span class="wp-badge green">Open</span>
+          <span class="wp-badge yellow">Limited</span>
+          <span class="wp-badge red">Full</span>
+        </div>
+      </div>
+      <div class="wp-lot-list" id="lot-list"></div>
+    </div>
+
+    <!-- PERSONAS -->
+    <div class="wp-card">
+      <div class="wp-card-header">
+        <div class="wp-card-title">User Personas</div>
+        <span class="wp-badge red">5 Profiles</span>
+      </div>
+      <div class="wp-persona-list">
+        <div class="wp-persona">
+          <div class="wp-persona-avatar" style="background:rgba(204,0,0,0.2);color:#FF6B6B;">DT</div>
+          <div class="wp-persona-info">
+            <div class="wp-persona-name">Dr. Alisha Thompson</div>
+            <div class="wp-persona-role">Faculty · College of Sciences</div>
+          </div>
+          <div class="wp-persona-need">Permit filter</div>
+        </div>
+        <div class="wp-persona">
+          <div class="wp-persona-avatar" style="background:rgba(29,185,84,0.15);color:#4ADE80;">JL</div>
+          <div class="wp-persona-info">
+            <div class="wp-persona-name">Jordan Lee</div>
+            <div class="wp-persona-role">Undergrad · Business Admin</div>
+          </div>
+          <div class="wp-persona-need">Real-time map</div>
+        </div>
+        <div class="wp-persona">
+          <div class="wp-persona-avatar" style="background:rgba(59,130,246,0.15);color:#60A5FA;">MH</div>
+          <div class="wp-persona-info">
+            <div class="wp-persona-name">Marcus Hill</div>
+            <div class="wp-persona-role">Dining Supervisor · Talley</div>
+          </div>
+          <div class="wp-persona-need">Event alerts</div>
+        </div>
+        <div class="wp-persona">
+          <div class="wp-persona-avatar" style="background:rgba(234,179,8,0.15);color:#FDE047;">EC</div>
+          <div class="wp-persona-info">
+            <div class="wp-persona-name">Emily Carter</div>
+            <div class="wp-persona-role">Visitor · Marketing Professional</div>
+          </div>
+          <div class="wp-persona-need">ADA access</div>
+        </div>
+        <div class="wp-persona">
+          <div class="wp-persona-avatar" style="background:rgba(168,85,247,0.15);color:#C084FC;">MA</div>
+          <div class="wp-persona-info">
+            <div class="wp-persona-name">Miguel Alvarez</div>
+            <div class="wp-persona-role">Contractor · Facilities</div>
+          </div>
+          <div class="wp-persona-need">Contractor zones</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.wp-grid -->
+
+  <!-- BOTTOM GRID: Chart + Events + Impact -->
+  <div class="wp-bottom-grid">
+
+    <!-- HOURLY TRAFFIC CHART -->
+    <div class="wp-card">
+      <div class="wp-card-header">
+        <div class="wp-card-title">Hourly Traffic</div>
+        <span class="wp-badge red">Today</span>
+      </div>
+      <div class="wp-chart-wrap">
+        <canvas id="trafficChart"></canvas>
+      </div>
+    </div>
+
+    <!-- CAMPUS EVENTS -->
+    <div class="wp-card">
+      <div class="wp-card-header">
+        <div class="wp-card-title">Campus Events</div>
+        <span class="wp-badge yellow">Today</span>
+      </div>
+      <div>
+        <div class="wp-event">
+          <div class="wp-event-dot" style="background:#EF4444;"></div>
+          <div class="wp-event-name">Wolfpack Basketball</div>
+          <div class="wp-event-time">6:00 PM</div>
+          <div class="wp-event-impact high">High</div>
+        </div>
+        <div class="wp-event">
+          <div class="wp-event-dot" style="background:var(--wolf-yellow);"></div>
+          <div class="wp-event-name">Engineering Symposium</div>
+          <div class="wp-event-time">2:00 PM</div>
+          <div class="wp-event-impact med">Med</div>
+        </div>
+        <div class="wp-event">
+          <div class="wp-event-dot" style="background:var(--wolf-yellow);"></div>
+          <div class="wp-event-name">Graduation Ceremony</div>
+          <div class="wp-event-time">10:00 AM</div>
+          <div class="wp-event-impact med">Med</div>
+        </div>
+        <div class="wp-event">
+          <div class="wp-event-dot" style="background:#3B82F6;"></div>
+          <div class="wp-event-name">MEM Executive Challenge</div>
+          <div class="wp-event-time">9:00 AM</div>
+          <div class="wp-event-impact low">Low</div>
+        </div>
+        <div class="wp-event">
+          <div class="wp-event-dot" style="background:#22C55E;"></div>
+          <div class="wp-event-name">Maitri GSO Meetup</div>
+          <div class="wp-event-time">5:30 PM</div>
+          <div class="wp-event-impact low">Low</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPACT + FEATURE PRIORITY -->
+    <div class="wp-card">
+      <div class="wp-card-header">
+        <div class="wp-card-title">Project Impact</div>
+        <span class="wp-badge green">Projected</span>
+      </div>
+
+      <div class="wp-impact-row">
+        <div class="wp-impact-item">
+          <div class="wp-impact-val">65%</div>
+          <div class="wp-impact-label">Search time reduction</div>
+        </div>
+        <div class="wp-impact-item" style="border-left-color:var(--avail-green);">
+          <div class="wp-impact-val" style="color:var(--avail-green);">40%</div>
+          <div class="wp-impact-label">On-time arrival increase</div>
+        </div>
+        <div class="wp-impact-item" style="border-left-color:#3B82F6;">
+          <div class="wp-impact-val" style="color:#3B82F6;">5</div>
+          <div class="wp-impact-label">User segments served</div>
+        </div>
+        <div class="wp-impact-item" style="border-left-color:#EAB308;">
+          <div class="wp-impact-val" style="color:#EAB308;">↓CO₂</div>
+          <div class="wp-impact-label">Lower fuel emissions</div>
+        </div>
+      </div>
+
+      <div style="padding:0 18px 16px;">
+        <div style="font-size:11px;color:var(--wolf-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Feature Priority (MoSCoW)</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--avail-green);flex-shrink:0;"></span>
+            <span style="color:var(--wolf-text);flex:1;">Availability Map</span>
+            <span class="wp-priority must">Must</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--avail-green);flex-shrink:0;"></span>
+            <span style="color:var(--wolf-text);flex:1;">Event Overflow Alerts</span>
+            <span class="wp-priority must">Must</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--wolf-yellow);flex-shrink:0;"></span>
+            <span style="color:var(--wolf-text);flex:1;">Permit-Based Filters</span>
+            <span class="wp-priority should">Should</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--wolf-yellow);flex-shrink:0;"></span>
+            <span style="color:var(--wolf-text);flex:1;">Contractor Parking Access</span>
+            <span class="wp-priority should">Should</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0;"></span>
+            <span style="color:var(--wolf-text);flex:1;">ADA Visitor Parking</span>
+            <span class="wp-priority could">Could</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.wp-bottom-grid -->
+
+</div><!-- /.wp-body -->
+
+<!-- SQL SCHEMA SECTION -->
+<div class="wp-body" style="padding-top:0;">
+
+  <!-- SECTION HEADER -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--wolf-red);margin-bottom:4px;">Database Architecture</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;">SQL Schema — 7 Normalized Tables + ERD</div>
+      <div style="font-size:11px;color:var(--wolf-muted);margin-top:4px;">Revised schema: added <code style="color:#93C5FD;font-size:10px;">vehicles</code> table, <code style="color:#93C5FD;font-size:10px;">lot_permit_types</code> junction, and <code style="color:#93C5FD;font-size:10px;">event_lot_map</code> junction to fix SET anti-pattern and one-lot event limitation.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:10px;background:rgba(234,179,8,0.15);color:#FDE047;padding:3px 10px;border-radius:4px;font-weight:700;">⬛ PK</span>
+      <span style="font-size:10px;background:rgba(59,130,246,0.15);color:#93C5FD;padding:3px 10px;border-radius:4px;font-weight:700;">🔷 FK</span>
+      <span style="font-size:10px;background:rgba(168,85,247,0.15);color:#C084FC;padding:3px 10px;border-radius:4px;font-weight:700;">⬡ Junction</span>
+      <span style="font-size:10px;background:rgba(29,185,84,0.12);color:#4ADE80;padding:3px 10px;border-radius:4px;font-weight:700;">★ New</span>
+    </div>
+  </div>
+
+  <!-- ERD DIAGRAM + TABLE CARDS LAYOUT -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
+
+    <!-- LEFT: ERD SVG -->
+    <div style="background:var(--wolf-card);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px;">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--wolf-muted);margin-bottom:12px;">Entity Relationship Diagram</div>
+      <svg viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;">
+        <defs>
+          <marker id="arrow-fk" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#93C5FD" opacity="0.7"/>
+          </marker>
+          <marker id="arrow-junc" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#C084FC" opacity="0.7"/>
+          </marker>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- RELATIONSHIP LINES (drawn first, behind nodes) -->
+        <!-- users → vehicles -->
+        <line x1="130" y1="72" x2="130" y2="148" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrow-fk)"/>
+        <text x="135" y="115" fill="#93C5FD" font-size="8" opacity="0.6" font-family="monospace">1:N</text>
+
+        <!-- users → allocations -->
+        <line x1="168" y1="82" x2="260" y2="248" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrow-fk)"/>
+        <text x="220" y="162" fill="#93C5FD" font-size="8" opacity="0.6" font-family="monospace">1:N</text>
+
+        <!-- parking_lots → availability -->
+        <line x1="390" y1="82" x2="390" y2="198" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrow-fk)"/>
+        <text x="395" y="145" fill="#93C5FD" font-size="8" opacity="0.6" font-family="monospace">1:1</text>
+
+        <!-- parking_lots → allocations -->
+        <line x1="352" y1="82" x2="318" y2="248" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrow-fk)"/>
+        <text x="348" y="162" fill="#93C5FD" font-size="8" opacity="0.6" font-family="monospace">1:N</text>
+
+        <!-- lot_permit_types → parking_lots -->
+        <line x1="228" y1="110" x2="338" y2="60" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arrow-junc)"/>
+
+        <!-- lot_permit_types → users (permit_type) -->
+        <line x1="193" y1="118" x2="155" y2="82" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arrow-junc)"/>
+
+        <!-- campus_events → event_lot_map -->
+        <line x1="390" y1="362" x2="310" y2="408" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arrow-junc)"/>
+
+        <!-- event_lot_map → parking_lots -->
+        <line x1="280" y1="398" x2="390" y2="102" stroke="#C084FC" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.3" marker-end="url(#arrow-junc)"/>
+
+        <!-- vehicles → allocations -->
+        <line x1="155" y1="192" x2="270" y2="248" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.5" marker-end="url(#arrow-fk)"/>
+        <text x="198" y="228" fill="#93C5FD" font-size="8" opacity="0.6" font-family="monospace">1:N</text>
+
+        <!-- ══ TABLE NODES ══ -->
+
+        <!-- USERS (center-left top) -->
+        <rect x="48" y="30" width="160" height="105" rx="7" fill="#1E1E1E" stroke="#CC0000" stroke-width="1.5"/>
+        <rect x="48" y="30" width="160" height="26" rx="7" fill="rgba(204,0,0,0.25)"/>
+        <rect x="48" y="49" width="160" height="7" fill="rgba(204,0,0,0.25)"/>
+        <text x="60" y="48" fill="#FF6B6B" font-size="11" font-weight="bold" font-family="'Courier New',monospace">users</text>
+        <text x="188" y="48" fill="#888" font-size="9" font-family="sans-serif">6 cols</text>
+        <!-- cols -->
+        <text x="60" y="71" fill="#FDE047" font-size="9" font-family="monospace">▪ user_id</text><text x="163" y="71" fill="#60A5FA" font-size="8" font-family="monospace">INT PK</text>
+        <text x="60" y="84" fill="#F0EEE8" font-size="9" font-family="monospace">  name</text><text x="163" y="84" fill="#60A5FA" font-size="8" font-family="monospace">VARCHAR</text>
+        <text x="60" y="97" fill="#F0EEE8" font-size="9" font-family="monospace">  email</text><text x="163" y="97" fill="#60A5FA" font-size="8" font-family="monospace">VARCHAR</text>
+        <text x="60" y="110" fill="#F0EEE8" font-size="9" font-family="monospace">  permit_type</text><text x="163" y="110" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+        <text x="60" y="123" fill="#F0EEE8" font-size="9" font-family="monospace">  role</text><text x="163" y="123" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+        <text x="60" y="136" fill="#F0EEE8" font-size="9" font-family="monospace">  created_at</text><text x="163" y="136" fill="#60A5FA" font-size="8" font-family="monospace">TIMESTAMP</text>
+
+        <!-- PARKING_LOTS (top right) -->
+        <rect x="310" y="30" width="172" height="118" rx="7" fill="#1E1E1E" stroke="#CC0000" stroke-width="1.5"/>
+        <rect x="310" y="30" width="172" height="26" rx="7" fill="rgba(204,0,0,0.25)"/>
+        <rect x="310" y="49" width="172" height="7" fill="rgba(204,0,0,0.25)"/>
+        <text x="322" y="48" fill="#FF6B6B" font-size="11" font-weight="bold" font-family="'Courier New',monospace">parking_lots</text>
+        <text x="455" y="48" fill="#888" font-size="9" font-family="sans-serif">6 cols</text>
+        <text x="322" y="71" fill="#FDE047" font-size="9" font-family="monospace">▪ lot_id</text><text x="430" y="71" fill="#60A5FA" font-size="8" font-family="monospace">INT PK</text>
+        <text x="322" y="84" fill="#F0EEE8" font-size="9" font-family="monospace">  lot_name</text><text x="430" y="84" fill="#60A5FA" font-size="8" font-family="monospace">VARCHAR</text>
+        <text x="322" y="97" fill="#F0EEE8" font-size="9" font-family="monospace">  total_capacity</text><text x="430" y="97" fill="#60A5FA" font-size="8" font-family="monospace">INT</text>
+        <text x="322" y="110" fill="#F0EEE8" font-size="9" font-family="monospace">  is_ada</text><text x="430" y="110" fill="#60A5FA" font-size="8" font-family="monospace">BOOLEAN</text>
+        <text x="322" y="123" fill="#F0EEE8" font-size="9" font-family="monospace">  location</text><text x="430" y="123" fill="#60A5FA" font-size="8" font-family="monospace">VARCHAR</text>
+        <text x="322" y="136" fill="#F0EEE8" font-size="9" font-family="monospace">  zone</text><text x="430" y="136" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+
+        <!-- LOT_PERMIT_TYPES junction (center top) - NEW -->
+        <rect x="168" y="100" width="148" height="70" rx="7" fill="#1E1E1E" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="5,2"/>
+        <rect x="168" y="100" width="148" height="22" rx="7" fill="rgba(168,85,247,0.2)"/>
+        <rect x="168" y="115" width="148" height="7" fill="rgba(168,85,247,0.2)"/>
+        <text x="178" y="115" fill="#C084FC" font-size="10" font-weight="bold" font-family="'Courier New',monospace">lot_permit_types</text>
+        <text x="293" y="115" fill="#4ADE80" font-size="9" font-family="sans-serif">★</text>
+        <text x="178" y="134" fill="#93C5FD" font-size="9" font-family="monospace">▷ lot_id</text><text x="270" y="134" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="178" y="147" fill="#93C5FD" font-size="9" font-family="monospace">  permit_type</text><text x="270" y="147" fill="#60A5FA" font-size="8" font-family="monospace">ENUM FK</text>
+        <text x="178" y="160" fill="#888" font-size="8" font-family="monospace">  (replaces SET col)</text>
+
+        <!-- VEHICLES (left center) - NEW -->
+        <rect x="30" y="155" width="155" height="90" rx="7" fill="#1E1E1E" stroke="#4ADE80" stroke-width="1.5"/>
+        <rect x="30" y="155" width="155" height="22" rx="7" fill="rgba(29,185,84,0.15)"/>
+        <rect x="30" y="170" width="155" height="7" fill="rgba(29,185,84,0.15)"/>
+        <text x="42" y="170" fill="#4ADE80" font-size="11" font-weight="bold" font-family="'Courier New',monospace">vehicles</text>
+        <text x="159" y="170" fill="#4ADE80" font-size="9" font-family="sans-serif">★</text>
+        <text x="42" y="191" fill="#FDE047" font-size="9" font-family="monospace">▪ vehicle_id</text><text x="148" y="191" fill="#60A5FA" font-size="8" font-family="monospace">INT PK</text>
+        <text x="42" y="204" fill="#93C5FD" font-size="9" font-family="monospace">▷ user_id</text><text x="148" y="204" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="42" y="217" fill="#F0EEE8" font-size="9" font-family="monospace">  plate_number</text><text x="148" y="217" fill="#60A5FA" font-size="8" font-family="monospace">VARCHAR</text>
+        <text x="42" y="230" fill="#F0EEE8" font-size="9" font-family="monospace">  vehicle_type</text><text x="148" y="230" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+        <text x="42" y="243" fill="#F0EEE8" font-size="9" font-family="monospace">  is_active</text><text x="148" y="243" fill="#60A5FA" font-size="8" font-family="monospace">BOOLEAN</text>
+
+        <!-- ALLOCATIONS (center) -->
+        <rect x="228" y="250" width="168" height="105" rx="7" fill="#1E1E1E" stroke="#CC0000" stroke-width="1.5"/>
+        <rect x="228" y="250" width="168" height="26" rx="7" fill="rgba(204,0,0,0.25)"/>
+        <rect x="228" y="269" width="168" height="7" fill="rgba(204,0,0,0.25)"/>
+        <text x="240" y="268" fill="#FF6B6B" font-size="11" font-weight="bold" font-family="'Courier New',monospace">allocations</text>
+        <text x="368" y="268" fill="#888" font-size="9" font-family="sans-serif">7 cols</text>
+        <text x="240" y="291" fill="#FDE047" font-size="9" font-family="monospace">▪ alloc_id</text><text x="352" y="291" fill="#60A5FA" font-size="8" font-family="monospace">INT PK</text>
+        <text x="240" y="304" fill="#93C5FD" font-size="9" font-family="monospace">▷ user_id</text><text x="352" y="304" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="240" y="317" fill="#93C5FD" font-size="9" font-family="monospace">▷ lot_id</text><text x="352" y="317" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="240" y="330" fill="#93C5FD" font-size="9" font-family="monospace">▷ vehicle_id</text><text x="352" y="330" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="240" y="343" fill="#F0EEE8" font-size="9" font-family="monospace">  allocated_at</text><text x="352" y="343" fill="#60A5FA" font-size="8" font-family="monospace">DATETIME</text>
+        <text x="240" y="356" fill="#F0EEE8" font-size="9" font-family="monospace">  expires_at</text><text x="352" y="356" fill="#60A5FA" font-size="8" font-family="monospace">DATETIME</text>
+
+        <!-- AVAILABILITY (right center) -->
+        <rect x="335" y="210" width="165" height="105" rx="7" fill="#1E1E1E" stroke="#CC0000" stroke-width="1.5"/>
+        <rect x="335" y="210" width="165" height="26" rx="7" fill="rgba(204,0,0,0.25)"/>
+        <rect x="335" y="229" width="165" height="7" fill="rgba(204,0,0,0.25)"/>
+        <text x="347" y="228" fill="#FF6B6B" font-size="11" font-weight="bold" font-family="'Courier New',monospace">availability</text>
+        <text x="470" y="228" fill="#888" font-size="9" font-family="sans-serif">6 cols</text>
+        <text x="347" y="251" fill="#FDE047" font-size="9" font-family="monospace">▪ avail_id</text><text x="460" y="251" fill="#60A5FA" font-size="8" font-family="monospace">INT PK</text>
+        <text x="347" y="264" fill="#93C5FD" font-size="9" font-family="monospace">▷ lot_id</text><text x="460" y="264" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="347" y="277" fill="#F0EEE8" font-size="9" font-family="monospace">  available_spots</text><text x="460" y="277" fill="#60A5FA" font-size="8" font-family="monospace">INT</text>
+        <text x="347" y="290" fill="#F0EEE8" font-size="9" font-family="monospace">  status</text><text x="460" y="290" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+        <text x="347" y="303" fill="#F0EEE8" font-size="9" font-family="monospace">  source</text><text x="460" y="303" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+        <text x="347" y="316" fill="#F0EEE8" font-size="9" font-family="monospace">  updated_at</text><text x="460" y="316" fill="#60A5FA" font-size="8" font-family="monospace">TIMESTAMP</text>
+
+        <!-- CAMPUS_EVENTS (bottom right) -->
+        <rect x="318" y="330" width="168" height="105" rx="7" fill="#1E1E1E" stroke="#EAB308" stroke-width="1.5"/>
+        <rect x="318" y="330" width="168" height="26" rx="7" fill="rgba(234,179,8,0.18)"/>
+        <rect x="318" y="349" width="168" height="7" fill="rgba(234,179,8,0.18)"/>
+        <text x="330" y="348" fill="#FDE047" font-size="11" font-weight="bold" font-family="'Courier New',monospace">campus_events</text>
+        <text x="457" y="348" fill="#888" font-size="9" font-family="sans-serif">6 cols</text>
+        <text x="330" y="371" fill="#FDE047" font-size="9" font-family="monospace">▪ event_id</text><text x="442" y="371" fill="#60A5FA" font-size="8" font-family="monospace">INT PK</text>
+        <text x="330" y="384" fill="#F0EEE8" font-size="9" font-family="monospace">  event_name</text><text x="442" y="384" fill="#60A5FA" font-size="8" font-family="monospace">VARCHAR</text>
+        <text x="330" y="397" fill="#F0EEE8" font-size="9" font-family="monospace">  start_time</text><text x="442" y="397" fill="#60A5FA" font-size="8" font-family="monospace">DATETIME</text>
+        <text x="330" y="410" fill="#F0EEE8" font-size="9" font-family="monospace">  end_time</text><text x="442" y="410" fill="#60A5FA" font-size="8" font-family="monospace">DATETIME</text>
+        <text x="330" y="423" fill="#F0EEE8" font-size="9" font-family="monospace">  impact_level</text><text x="442" y="423" fill="#60A5FA" font-size="8" font-family="monospace">ENUM</text>
+        <text x="330" y="436" fill="#F0EEE8" font-size="9" font-family="monospace">  created_by</text><text x="442" y="436" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+
+        <!-- EVENT_LOT_MAP junction (bottom center) - NEW -->
+        <rect x="140" y="400" width="160" height="68" rx="7" fill="#1E1E1E" stroke="#C084FC" stroke-width="1.5" stroke-dasharray="5,2"/>
+        <rect x="140" y="400" width="160" height="22" rx="7" fill="rgba(168,85,247,0.2)"/>
+        <rect x="140" y="415" width="160" height="7" fill="rgba(168,85,247,0.2)"/>
+        <text x="152" y="415" fill="#C084FC" font-size="10" font-weight="bold" font-family="'Courier New',monospace">event_lot_map</text>
+        <text x="282" y="415" fill="#4ADE80" font-size="9" font-family="sans-serif">★</text>
+        <text x="152" y="434" fill="#93C5FD" font-size="9" font-family="monospace">▷ event_id</text><text x="255" y="434" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="152" y="447" fill="#93C5FD" font-size="9" font-family="monospace">▷ lot_id</text><text x="255" y="447" fill="#60A5FA" font-size="8" font-family="monospace">INT FK</text>
+        <text x="152" y="460" fill="#888" font-size="8" font-family="monospace">  (replaces single FK)</text>
+
+        <!-- event_lot_map → parking_lots line label -->
+        <text x="200" y="395" fill="#C084FC" font-size="8" opacity="0.7" font-family="monospace">N:M</text>
+
+        <!-- Legend box -->
+        <rect x="16" y="465" width="488" height="42" rx="5" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+        <text x="26" y="481" fill="#888" font-size="8.5" font-family="sans-serif">▪ PK = Primary Key</text>
+        <text x="26" y="494" fill="#888" font-size="8.5" font-family="sans-serif">▷ FK = Foreign Key</text>
+        <text x="140" y="481" fill="#4ADE80" font-size="8.5" font-family="sans-serif">★ = Added in revised schema</text>
+        <text x="140" y="494" fill="#888" font-size="8.5" font-family="sans-serif">Dashed border = Junction table (many-to-many)</text>
+        <text x="345" y="481" fill="#93C5FD" font-size="8.5" font-family="sans-serif">── FK relationship</text>
+        <text x="345" y="494" fill="#C084FC" font-size="8.5" font-family="sans-serif">- - Junction reference</text>
+      </svg>
+    </div>
+
+    <!-- RIGHT: TABLE CARDS + SCHEMA NOTES -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Schema change callouts -->
+      <div style="background:rgba(29,185,84,0.07);border:1px solid rgba(29,185,84,0.2);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#4ADE80;margin-bottom:10px;font-weight:700;">✦ Schema Improvements (3 Changes)</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:12px;color:var(--wolf-text);line-height:1.5;">
+            <span style="color:#C084FC;font-weight:600;">① lot_permit_types</span> <span style="color:var(--wolf-muted);">junction table</span><br>
+            <span style="color:#888;font-size:11px;">Replaces the <code style="color:#FF6B6B;">SET</code> column anti-pattern on <code style="color:#93C5FD;">parking_lots.permit_allowed</code>. A SET column can't be properly indexed or joined — using a junction table makes permit-to-lot matching a standard indexed JOIN instead of <code style="color:#FF6B6B;">FIND_IN_SET()</code>, which can't use indexes.</span>
+          </div>
+          <div style="font-size:12px;color:var(--wolf-text);line-height:1.5;">
+            <span style="color:#4ADE80;font-weight:600;">② vehicles</span> <span style="color:var(--wolf-muted);">table added</span><br>
+            <span style="color:#888;font-size:11px;">Users need to register a vehicle plate to receive an allocation. Without this, you can't track <em>which car</em> is parked where — critical for enforcement, towing alerts, and the contractor permit use case.</span>
+          </div>
+          <div style="font-size:12px;color:var(--wolf-text);line-height:1.5;">
+            <span style="color:#C084FC;font-weight:600;">③ event_lot_map</span> <span style="color:var(--wolf-muted);">junction table</span><br>
+            <span style="color:#888;font-size:11px;">Original schema had a single <code style="color:#FF6B6B;">affected_lot_id</code> FK on <code style="color:#93C5FD;">campus_events</code> — a basketball game affects 4+ lots. A many-to-many junction handles this correctly.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div style="background:var(--wolf-card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--wolf-red);line-height:1;">7</div>
+          <div style="font-size:10px;color:var(--wolf-muted);margin-top:2px;">Total Tables</div>
+          <div style="font-size:9px;color:#4ADE80;margin-top:3px;">↑ was 5</div>
+        </div>
+        <div style="background:var(--wolf-card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#93C5FD;line-height:1;">9</div>
+          <div style="font-size:10px;color:var(--wolf-muted);margin-top:2px;">FK Relationships</div>
+          <div style="font-size:9px;color:#4ADE80;margin-top:3px;">↑ was 4</div>
+        </div>
+        <div style="background:var(--wolf-card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#C084FC;line-height:1;">2</div>
+          <div style="font-size:10px;color:var(--wolf-muted);margin-top:2px;">Junction Tables</div>
+          <div style="font-size:9px;color:#4ADE80;margin-top:3px;">properly normalized</div>
+        </div>
+      </div>
+
+      <!-- Compact table reference -->
+      <div style="background:var(--wolf-card);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;flex:1;">
+        <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--wolf-muted);">Table Reference</div>
+        <div style="display:grid;grid-template-columns:auto 1fr auto;font-size:11px;font-family:monospace;">
+          <div style="padding:7px 14px;color:#FF6B6B;border-bottom:1px solid rgba(255,255,255,0.04);">users</div>
+          <div style="padding:7px 6px;color:#888;border-bottom:1px solid rgba(255,255,255,0.04);">user_id, name, email, permit_type, role</div>
+          <div style="padding:7px 14px;color:#555;border-bottom:1px solid rgba(255,255,255,0.04);">core</div>
+
+          <div style="padding:7px 14px;color:#FF6B6B;border-bottom:1px solid rgba(255,255,255,0.04);">parking_lots</div>
+          <div style="padding:7px 6px;color:#888;border-bottom:1px solid rgba(255,255,255,0.04);">lot_id, lot_name, capacity, is_ada, location, zone</div>
+          <div style="padding:7px 14px;color:#555;border-bottom:1px solid rgba(255,255,255,0.04);">core</div>
+
+          <div style="padding:7px 14px;color:#4ADE80;border-bottom:1px solid rgba(255,255,255,0.04);">vehicles ★</div>
+          <div style="padding:7px 6px;color:#888;border-bottom:1px solid rgba(255,255,255,0.04);">vehicle_id, user_id, plate_number, vehicle_type</div>
+          <div style="padding:7px 14px;color:#4ADE80;border-bottom:1px solid rgba(255,255,255,0.04);">new</div>
+
+          <div style="padding:7px 14px;color:#FF6B6B;border-bottom:1px solid rgba(255,255,255,0.04);">availability</div>
+          <div style="padding:7px 6px;color:#888;border-bottom:1px solid rgba(255,255,255,0.04);">avail_id, lot_id, available_spots, status, source</div>
+          <div style="padding:7px 14px;color:#555;border-bottom:1px solid rgba(255,255,255,0.04);">core</div>
+
+          <div style="padding:7px 14px;color:#FF6B6B;border-bottom:1px solid rgba(255,255,255,0.04);">allocations</div>
+          <div style="padding:7px 6px;color:#888;border-bottom:1px solid rgba(255,255,255,0.04);">alloc_id, user_id, lot_id, vehicle_id, allocated_at, expires_at</div>
+          <div style="padding:7px 14px;color:#555;border-bottom:1px solid rgba(255,255,255,0.04);">core</div>
+
+          <div style="padding:7px 14px;color:#FDE047;border-bottom:1px solid rgba(255,255,255,0.04);">campus_events</div>
+          <div style="padding:7px 6px;color:#888;border-bottom:1px solid rgba(255,255,255,0.04);">event_id, event_name, start_time, end_time, impact_level</div>
+          <div style="padding:7px 14px;color:#555;border-bottom:1px solid rgba(255,255,255,0.04);">core</div>
+
+          <div style="padding:7px 14px;color:#C084FC;">lot_permit_types ★</div>
+          <div style="padding:7px 6px;color:#888;">lot_id + permit_type (junction)</div>
+          <div style="padding:7px 14px;color:#4ADE80;">new</div>
+
+          <div style="padding:7px 14px;color:#C084FC;border-top:1px solid rgba(255,255,255,0.04);">event_lot_map ★</div>
+          <div style="padding:7px 6px;color:#888;border-top:1px solid rgba(255,255,255,0.04);">event_id + lot_id (junction)</div>
+          <div style="padding:7px 14px;color:#4ADE80;border-top:1px solid rgba(255,255,255,0.04);">new</div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /ERD + cards grid -->
+
+  <!-- SAMPLE QUERIES (updated for new schema) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:4px;">
+
+    <div class="wp-sql-query">
+      <div class="wp-sql-query-label">Query 1 — Real-Time Availability by Permit Type</div>
+      <div class="wp-sql-code"><span class="sql-com">-- Uses lot_permit_types junction (replaces FIND_IN_SET)</span>
+<span class="sql-kw">SELECT</span> <span class="sql-col">pl.lot_name</span>, <span class="sql-col">a.available_spots</span>, <span class="sql-col">a.status</span>
+<span class="sql-kw">FROM</span>   <span class="sql-col">parking_lots</span>      pl
+<span class="sql-kw">JOIN</span>   <span class="sql-col">lot_permit_types</span>  lpt <span class="sql-kw">ON</span> lpt.lot_id = pl.lot_id
+<span class="sql-kw">JOIN</span>   <span class="sql-col">availability</span>      a   <span class="sql-kw">ON</span> a.lot_id  = pl.lot_id
+<span class="sql-kw">JOIN</span>   <span class="sql-col">users</span>             u   <span class="sql-kw">ON</span> u.permit_type = lpt.permit_type
+<span class="sql-kw">WHERE</span>  u.user_id = <span class="sql-num">:uid</span>
+  <span class="sql-kw">AND</span>  a.available_spots > <span class="sql-num">0</span>
+  <span class="sql-kw">AND</span>  a.status != <span class="sql-str">'FULL'</span>
+<span class="sql-kw">ORDER BY</span> a.available_spots <span class="sql-kw">DESC</span>;</div>
+    </div>
+
+    <div class="wp-sql-query">
+      <div class="wp-sql-query-label">Query 2 — Event-Based Overflow Alert (Multi-Lot)</div>
+      <div class="wp-sql-code"><span class="sql-com">-- Uses event_lot_map junction for multi-lot events</span>
+<span class="sql-kw">SELECT</span> <span class="sql-col">e.event_name</span>, <span class="sql-col">pl.lot_name</span>,
+       <span class="sql-col">a.available_spots</span>, <span class="sql-col">e.impact_level</span>
+<span class="sql-kw">FROM</span>   <span class="sql-col">campus_events</span> e
+<span class="sql-kw">JOIN</span>   <span class="sql-col">event_lot_map</span> elm <span class="sql-kw">ON</span> elm.event_id  = e.event_id
+<span class="sql-kw">JOIN</span>   <span class="sql-col">parking_lots</span>  pl  <span class="sql-kw">ON</span> pl.lot_id    = elm.lot_id
+<span class="sql-kw">JOIN</span>   <span class="sql-col">availability</span>  a   <span class="sql-kw">ON</span> a.lot_id     = pl.lot_id
+<span class="sql-kw">WHERE</span>  <span class="sql-fn">NOW()</span> <span class="sql-kw">BETWEEN</span> e.start_time <span class="sql-kw">AND</span> e.end_time
+  <span class="sql-kw">AND</span>  e.impact_level <span class="sql-kw">IN</span> (<span class="sql-str">'HIGH'</span>, <span class="sql-str">'MEDIUM'</span>)
+<span class="sql-kw">ORDER BY</span> e.impact_level <span class="sql-kw">DESC</span>;</div>
+    </div>
+
+    <div class="wp-sql-query">
+      <div class="wp-sql-query-label">Query 3 — Allocation Efficiency (25% Improvement KPI)</div>
+      <div class="wp-sql-code"><span class="sql-com">-- Tracks successful allocations today vs total requests</span>
+<span class="sql-kw">SELECT</span>
+  <span class="sql-fn">COUNT</span>(*) <span class="sql-kw">AS</span> total_allocs,
+  <span class="sql-fn">SUM</span>(<span class="sql-kw">CASE WHEN</span> status = <span class="sql-str">'ACTIVE'</span>   <span class="sql-kw">THEN</span> <span class="sql-num">1</span> <span class="sql-kw">ELSE</span> <span class="sql-num">0</span> <span class="sql-kw">END</span>) <span class="sql-kw">AS</span> successful,
+  <span class="sql-fn">SUM</span>(<span class="sql-kw">CASE WHEN</span> status = <span class="sql-str">'EXPIRED'</span>  <span class="sql-kw">THEN</span> <span class="sql-num">1</span> <span class="sql-kw">ELSE</span> <span class="sql-num">0</span> <span class="sql-kw">END</span>) <span class="sql-kw">AS</span> no_shows,
+  <span class="sql-fn">ROUND</span>(<span class="sql-fn">SUM</span>(<span class="sql-kw">CASE WHEN</span> status=<span class="sql-str">'ACTIVE'</span> <span class="sql-kw">THEN</span> <span class="sql-num">1</span> <span class="sql-kw">ELSE</span> <span class="sql-num">0</span> <span class="sql-kw">END</span>)
+    * <span class="sql-num">100.0</span> / <span class="sql-fn">COUNT</span>(*), <span class="sql-num">2</span>) <span class="sql-kw">AS</span> efficiency_pct
+<span class="sql-kw">FROM</span>  <span class="sql-col">allocations</span>
+<span class="sql-kw">WHERE</span> allocated_at >= <span class="sql-fn">CURDATE</span>();</div>
+    </div>
+
+    <div class="wp-sql-query">
+      <div class="wp-sql-query-label">Query 4 — Vehicle Lookup for Enforcement</div>
+      <div class="wp-sql-code"><span class="sql-com">-- Emily's use case + contractor: verify plate → allocation</span>
+<span class="sql-kw">SELECT</span> <span class="sql-col">u.name</span>, <span class="sql-col">u.permit_type</span>, <span class="sql-col">pl.lot_name</span>,
+       <span class="sql-col">v.plate_number</span>, <span class="sql-col">al.expires_at</span>, <span class="sql-col">al.status</span>
+<span class="sql-kw">FROM</span>   <span class="sql-col">vehicles</span>     v
+<span class="sql-kw">JOIN</span>   <span class="sql-col">users</span>        u  <span class="sql-kw">ON</span> u.user_id  = v.user_id
+<span class="sql-kw">JOIN</span>   <span class="sql-col">allocations</span>  al <span class="sql-kw">ON</span> al.vehicle_id = v.vehicle_id
+<span class="sql-kw">JOIN</span>   <span class="sql-col">parking_lots</span> pl <span class="sql-kw">ON</span> pl.lot_id  = al.lot_id
+<span class="sql-kw">WHERE</span>  v.plate_number = <span class="sql-num">:plate</span>
+  <span class="sql-kw">AND</span>  al.status = <span class="sql-str">'ACTIVE'</span>
+  <span class="sql-kw">AND</span>  al.expires_at > <span class="sql-fn">NOW</span>();</div>
+    </div>
+
+  </div><!-- /.queries grid -->
+
+</div><!-- /.SQL section -->
+
+<div class="wp-footer">
+  <span>WolfPark</span> · Smart Parking App for NC State University ·
+  Team S · EM589 Business Dynamics for Engineering Managers
+</div>
+
+<script>
+  /* ── LOT DATA ── */
+  const lots = [
+    { name: 'Coliseum Lot',          type: 'Student',    spots: 214, total: 320, status: 'green'  },
+    { name: 'Dan Allen Drive',        type: 'Student',    spots:  88, total: 210, status: 'yellow' },
+    { name: 'Faculty Lot 12',         type: 'Faculty',    spots: 143, total: 150, status: 'green'  },
+    { name: 'Talley Staff Lot',       type: 'Staff',      spots:  12, total:  80, status: 'red'    },
+    { name: 'Visitor ADA Zone A',     type: 'ADA',        spots:  31, total:  40, status: 'green'  },
+    { name: 'Engineering Contractor', type: 'Contractor', spots:   0, total:  25, status: 'red'    },
+    { name: 'Partners Way Garage',    type: 'Student',    spots: 189, total: 500, status: 'green'  },
+    { name: 'Reynolds Faculty',       type: 'Faculty',    spots:  22, total:  60, status: 'yellow' },
+  ];
+
+  function renderLots(filter) {
+    const list     = document.getElementById('lot-list');
+    const filtered = filter === 'All' ? lots : lots.filter(l => l.type === filter);
+    list.innerHTML = filtered.map(l => {
+      const barW = Math.round((l.total - l.spots) / l.total * 100);
+      return `<div class="wp-lot">
+        <div class="wp-lot-status ${l.status}"></div>
+        <div class="wp-lot-name">${l.name}</div>
+        <div class="wp-lot-type">${l.type}</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          <div class="wp-lot-spots">${l.spots}</div>
+          <div class="wp-lot-bar-wrap">
+            <div class="wp-lot-bar ${l.status}" style="width:${barW}%"></div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  renderLots('All');
+
+  function filterLots(btn, filter) {
+    document.querySelectorAll('.wp-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLots(filter);
+  }
+
+  function setTab(btn) {
+    document.querySelectorAll('.wp-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  /* ── LIVE COUNTER ── */
+  setInterval(() => {
+    const delta = Math.floor(Math.random() * 20) - 8;
+    const el    = document.getElementById('avail-count');
+    const trend = document.getElementById('avail-trend');
+    const cur   = parseInt(el.textContent);
+    const next  = Math.max(600, Math.min(1000, cur + delta));
+    el.textContent   = next;
+    trend.textContent = (delta >= 0 ? '↑ ' : '↓ ') + Math.abs(delta) + ' from 5 min ago';
+    trend.className   = 'wp-stat-trend ' + (delta >= 0 ? 'up' : 'dn');
+  }, 4000);
+
+  /* ── CHART ── */
+  const ctx = document.getElementById('trafficChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['7AM','8AM','9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM'],
+      datasets: [{
+        label: 'Searches',
+        data:  [120, 340, 520, 410, 380, 460, 430, 390, 350, 400, 480, 590],
+        backgroundColor: function(ctx) {
+          const v = ctx.raw;
+          if (v >= 500) return 'rgba(204,0,0,0.75)';
+          if (v >= 400) return 'rgba(234,179,8,0.60)';
+          return 'rgba(34,197,94,0.50)';
+        },
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1E1E1E',
+          titleColor: '#F0EEE8',
+          bodyColor: '#888',
+          borderColor: 'rgba(204,0,0,0.3)',
+          borderWidth: 1,
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#666', font: { size: 10 }, autoSkip: false, maxRotation: 0 },
+          grid:  { color: 'rgba(255,255,255,0.04)' },
+          border:{ color: 'rgba(255,255,255,0.06)' }
+        },
+        y: {
+          ticks: { color: '#666', font: { size: 10 } },
+          grid:  { color: 'rgba(255,255,255,0.06)' },
+          border:{ color: 'rgba(255,255,255,0.06)' }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>
