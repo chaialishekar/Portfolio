@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventory &amp; Safety-Stock Waste — Chaitali Shashi Shekar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171d1f;
+    --ink-soft:#4a5457;
+    --paper:#f2f4f3;
+    --card:#ffffff;
+    --line:#d8dcda;
+    --amber:#c97a2e;
+    --amber-deep:#8a521c;
+    --teal:#2e6e73;
+    --teal-deep:#1c454a;
+    --navy:#152230;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:0 28px;}
+
+  header.hero{
+    background:var(--navy);
+    color:#eef2f1;
+    padding:90px 0 70px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#8fa3ab;
+    margin-bottom:22px;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:clamp(34px,5vw,52px);
+    line-height:1.12;
+    letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  h1 .amber{color:var(--amber);}
+  h1 .teal{color:#5aa8ad;}
+  .hero-sub{
+    margin-top:24px;
+    font-size:17px;
+    color:#c3ced0;
+    max-width:52ch;
+  }
+
+  /* Balance visual */
+  .balance{
+    margin-top:56px;
+    display:flex;
+    align-items:flex-end;
+    gap:18px;
+  }
+  .balance-col{flex:1; max-width:340px;}
+  .balance-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:#9fb0b4;
+    margin-bottom:10px;
+  }
+  .balance-bar{
+    height:14px;
+    border-radius:2px;
+    position:relative;
+  }
+  .balance-bar.amber-bar{background:linear-gradient(90deg,var(--amber-deep),var(--amber)); width:76%;}
+  .balance-bar.teal-bar{background:linear-gradient(90deg,var(--teal-deep),var(--teal)); width:75%;}
+  .balance-figure{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    margin-top:8px;
+    color:#eef2f1;
+  }
+  .balance-fine{font-size:12px; color:#9fb0b4; font-weight:400; font-family:'Inter',sans-serif;}
+
+  main{padding:64px 0 40px;}
+
+  section{margin-bottom:64px;}
+  .kicker{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--teal-deep);
+    margin-bottom:12px;
+  }
+  h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:26px;
+    margin-bottom:18px;
+    letter-spacing:-0.01em;
+  }
+  p{color:var(--ink-soft); font-size:15.5px; max-width:70ch;}
+  p + p{margin-top:12px;}
+
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-top:28px;
+  }
+  .stat{
+    background:var(--card);
+    padding:22px 20px;
+  }
+  .stat-num{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:28px;
+    font-weight:600;
+    color:var(--navy);
+  }
+  .stat-label{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+
+  .method-list{margin-top:22px; border-top:1px solid var(--line);}
+  .method-row{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    gap:24px;
+    padding:20px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .method-row .m-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.03em;
+    color:var(--teal-deep);
+    text-transform:uppercase;
+    padding-top:2px;
+  }
+  .method-row p{margin:0;}
+  code{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    background:#e9ece9;
+    padding:2px 6px;
+    border-radius:3px;
+    color:var(--navy);
+  }
+
+  .status-box{
+    background:#fdf5ea;
+    border:1px solid #e8d3ac;
+    border-left:4px solid var(--amber);
+    padding:20px 22px;
+    margin-top:28px;
+  }
+  .status-box .status-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    margin-bottom:8px;
+    font-weight:500;
+  }
+  .status-box p{color:#5a4626; font-size:14.5px;}
+
+  .tech-tags{display:flex; flex-wrap:wrap; gap:9px; margin-top:20px;}
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    padding:6px 12px;
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink-soft);
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:36px 0 60px;
+  }
+  footer p{font-size:13.5px;}
+  footer a{color:var(--teal-deep); text-decoration:none; border-bottom:1px solid var(--teal);}
+  footer a:hover{color:var(--amber-deep); border-color:var(--amber);}
+
+  @media (max-width:600px){
+    .method-row{grid-template-columns:1fr; gap:6px;}
+    .balance{flex-direction:column; align-items:stretch;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Case study — operations analytics</div>
+    <h1>The same network was <span class="amber">over-stocked</span> and <span class="teal">under-stocked</span> at once.</h1>
+    <p class="hero-sub">A data model built to show why "reduce excess inventory" and "avoid stockouts" usually fail as separate initiatives — because in this network, they were the same failure, happening on the same days.</p>
+
+    <div class="balance">
+      <div class="balance-col">
+        <div class="balance-label">Excess inventory</div>
+        <div class="balance-bar amber-bar"></div>
+        <div class="balance-figure">19.1% <span class="balance-fine">of store-product-days</span></div>
+      </div>
+      <div class="balance-col">
+        <div class="balance-label">Stockout risk</div>
+        <div class="balance-bar teal-bar"></div>
+        <div class="balance-figure">18.7% <span class="balance-fine">of store-product-days</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section>
+      <div class="kicker">01 — The question</div>
+      <h2>Why do "cut waste" and "protect service level" projects keep working against each other?</h2>
+      <p>Most inventory dashboards report one number: overstock <em>or</em> stockout rate. Reported separately, each looks like a normal, manageable tail. Reported together, against the same store and the same product on the same day, they show something different — a reorder policy that was set once, for average conditions, and never revisited per SKU or per location as those conditions diverged.</p>
+    </section>
+
+    <section>
+      <div class="kicker">02 — What the data showed</div>
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-num">73,100</div>
+          <div class="stat-label">daily store × product records, Jan 2022 – Jan 2024</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">5 × 20 × 4</div>
+          <div class="stat-label">stores × products × regions in the network</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">$46.9M</div>
+          <div class="stat-label">cumulative capital tied up in excess stock beyond target buffer</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">2.0 days</div>
+          <div class="stat-label">median days-of-supply held network-wide</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="kicker">03 — Method</div>
+      <h2>Built as a star schema, not a flat export</h2>
+      <div class="method-list">
+        <div class="method-row">
+          <div class="m-label">Data model</div>
+          <p>One fact table (<code>Fact_Inventory</code>) at daily store × product grain, joined to <code>Dim_Date</code>, <code>Dim_Product</code>, and <code>Dim_Store</code> — the standard shape for a Power BI-ready analytical model, not a single wide spreadsheet.</p>
+        </div>
+        <div class="method-row">
+          <div class="m-label">Core metric</div>
+          <p>Days-of-supply per store/product, from a trailing 28-day rolling demand average. A documented 3-day target buffer defines "excess" — a stated business rule, not a fact pulled from the source data, and called out explicitly rather than buried in a formula.</p>
+        </div>
+        <div class="method-row">
+          <div class="m-label">KPI layer</div>
+          <p>DAX measures for total excess value, % of store-days over target, % of store-days under 1 day of supply, and month-over-month movement — designed to sit side by side on one page rather than live in separate reports.</p>
+        </div>
+        <div class="method-row">
+          <div class="m-label">Source</div>
+          <p>Public retail inventory dataset (73K+ rows), used here to demonstrate the modeling and analysis approach — figures are illustrative of the method, not a real company's operating numbers.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="status-box">
+      <div class="status-label">Current status</div>
+      <p>The data model, schema, and DAX-defined KPIs above are complete and documented. The interactive Power BI report (multi-page dashboard, visuals, drill-through) is the next build step, using this model as its foundation. This page will be updated with dashboard screenshots once that build is finished.</p>
+    </div>
+
+    <section style="margin-top:56px;">
+      <div class="kicker">Built with</div>
+      <div class="tech-tags">
+        <span class="tag">Power BI · DAX</span>
+        <span class="tag">Python (pandas)</span>
+        <span class="tag">Star schema modeling</span>
+        <span class="tag">Excel</span>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Chaitali Shashi Shekar — <a href="mailto:csshekar@ncsu.edu">csshekar@ncsu.edu</a> · <a href="#">LinkedIn</a> · <a href="#">Portfolio</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
