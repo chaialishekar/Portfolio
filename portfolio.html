@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chaitali Shekar — Portfolio</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #fcfcf9;
+  --deep-green: #0a211a;
+  --text: #1a1a1a;
+  --text-muted: #5e6b66;
+  --accent: #c5a47e;
+  --accent-light: #e8d9c5;
+  --border: #d1d6d3;
+  --light-gray: #f4f5f2;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+}
+
+a { text-decoration: none; color: inherit; transition: 0.3s; }
+.container { width: min(1200px, 90vw); margin: auto; }
+
+/* HEADER */
+.site-header {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(252,252,249,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner { height: 80px; display: flex; justify-content: space-between; align-items: center; }
+.brand { font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--deep-green); font-size: 13px; }
+.nav { display: flex; gap: 36px; }
+.nav a { font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); }
+.nav a:hover { color: var(--deep-green); }
+.header-spacer { height: 80px; }
+
+/* SECTIONS */
+.section-padding { padding: 110px 0; border-bottom: 1px solid var(--border); }
+.section-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; color: var(--accent); display: block; margin-bottom: 14px; }
+.section-title { font-size: 2.4rem; font-weight: 800; color: var(--deep-green); margin-bottom: 50px; letter-spacing: -1px; }
+
+/* HERO */
+.hero { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 60%, var(--accent-light) 0%, transparent 70%); opacity: 0.35; pointer-events: none; }
+.name { font-family: 'Playfair Display', serif; font-size: clamp(44px, 8vw, 96px); font-weight: 800; line-height: 0.95; color: var(--deep-green); margin-bottom: 36px; letter-spacing: -2px; }
+.typewrap { font-size: 11px; text-transform: uppercase; letter-spacing: 5px; color: var(--text-muted); border-top: 1px solid var(--accent); padding-top: 22px; max-width: 580px; }
+
+/* PROJECTS */
+.projects-grid { display: grid; gap: 30px; }
+@media(min-width: 768px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+@media(min-width: 1024px) { .projects-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.t-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--border); transition: 0.35s; height: 100%; }
+.t-card:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(10,33,26,0.07); }
+.proj-media { width: 100%; height: 210px; object-fit: cover; border-bottom: 1px solid var(--border); }
+.card-body { padding: 28px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
+.t-card h3 { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--deep-green); }
+.t-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; flex: 1; }
+
+/* CERTS */
+.cert-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.cert-card { background: #fff; border: 1px solid var(--border); padding: 24px 28px; display: flex; flex-direction: column; gap: 14px; transition: 0.3s; }
+.cert-card:hover { border-color: var(--accent); }
+.cert-logo { width: 56px; height: 28px; object-fit: contain; }
+.cert-title { font-weight: 800; font-size: 0.9rem; color: var(--deep-green); line-height: 1.3; }
+.cert-issuer { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.cert-actions { display: flex; gap: 10px; margin-top: auto; }
+
+/* BTN */
+.btn { display: inline-block; padding: 11px 20px; border: 1px solid var(--deep-green); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; background: transparent; color: var(--deep-green); cursor: pointer; transition: 0.25s; }
+.btn:hover { background: var(--deep-green); color: #fff; }
+.btn-ghost { border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.8); }
+.btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: #fff; color: #fff; }
+
+.info-grid { display: grid; gap: 36px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.info-item { border-left: 2px solid var(--accent); padding-left: 22px; }
+.info-item h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; color: var(--deep-green); font-weight: 800; }
+.info-item p { font-size: 0.88rem; color: var(--text-muted); }
+
+.footer-connect { background: var(--deep-green); color: #fff; padding: 110px 0 60px; }
+.social-links { display: flex; gap: 36px; margin-top: 36px; }
+.social-links a { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: #fff; border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+.social-links a:hover { color: var(--accent); }
+
+footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.35); background: var(--deep-green); border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* EXPERIENCE TIMELINE */
+.exp-timeline { display: flex; flex-direction: column; gap: 0; margin-top: 40px; border-top: 1px solid var(--border); }
+.exp-item { display: grid; grid-template-columns: 160px 1fr; gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--border); }
+@media(max-width: 700px) { .exp-item { grid-template-columns: 1fr; gap: 8px; } }
+.exp-dates { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); }
+.exp-content { border-left: 2px solid var(--border); padding-left: 22px; }
+.exp-content h4 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--deep-green); margin-bottom: 10px; }
+.exp-content ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.exp-content li { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
+/* =============================================
+   COMMUNITY SECTION — refined editorial style
+   ============================================= */
+
+#community { padding: 110px 0; border-bottom: 1px solid var(--border); }
+
+.cs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 56px;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.cs-header-left { flex: 0 0 auto; }
+.cs-header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--deep-green);
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-bottom: 0;
+}
+.cs-header-sub {
+  max-width: 340px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  text-align: right;
+}
+
+/* The main two-column grid */
+.cs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+/* LEFT COLUMN */
+.cs-left { display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+
+/* Slideshow */
+.cs-slideshow {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--deep-green);
+  flex-shrink: 0;
+}
+.cs-slide {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: opacity 1s ease-in-out;
+}
+.cs-slide:not(:first-child) { opacity: 0; }
+.cs-slide.active { opacity: 1 !important; }
+
+.cs-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,33,26,0.88) 35%, rgba(10,33,26,0.15) 75%, transparent 100%);
+  z-index: 1;
+}
+.cs-overlay-content {
+  position: absolute; inset: 0;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+}
+.cs-slide-label {
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 4px; color: var(--accent);
+}
+.cs-slide-bottom {}
+.cs-slide-eyebrow {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 3px; color: rgba(255,255,255,0.45); margin-bottom: 8px;
+}
+.cs-slide-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800; color: #fff; line-height: 1.05; letter-spacing: -0.5px;
+}
+
+/* Dot nav */
+.cs-dots { display: flex; gap: 5px; }
+.cs-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer; transition: background 0.3s, transform 0.3s;
+  border: none; padding: 0;
+}
+.cs-dot.active { background: var(--accent); transform: scale(1.4); }
+
+/* Description panel below slideshow */
+.cs-desc {
+  padding: 36px;
+  border-top: 1px solid var(--border);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cs-desc h4 {
+  font-size: 11px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--deep-green);
+}
+.cs-desc p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; }
+
+/* RIGHT COLUMN */
+.cs-right { display: flex; flex-direction: column; }
+
+.cs-card {
+  padding: 36px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: background 0.25s;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.cs-card:last-child { border-bottom: none; }
+.cs-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: transparent;
+  transition: background 0.25s;
+}
+.cs-card:hover::before { background: var(--accent); }
+.cs-card:hover { background: #faf9f6; }
+
+.cs-card-label {
+  font-size: 9px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 3px; color: var(--accent);
+}
+.cs-card-title {
+  font-size: 12px; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--deep-green);
+}
+.cs-card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.8; }
+
+/* Dark accent card */
+.cs-card-dark {
+  background: var(--deep-green);
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.cs-card-dark .cs-card-label { color: var(--accent); }
+.cs-card-dark .cs-card-title { color: #fff; }
+.cs-card-dark p { font-size: 0.875rem; color: rgba(255,255,255,0.55); line-height: 1.8; }
+
+/* A small number callout strip */
+.cs-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+}
+.cs-stat {
+  padding: 28px 24px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.cs-stat:last-child { border-right: none; }
+.cs-stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 800;
+  color: var(--deep-green); line-height: 1;
+  margin-bottom: 6px;
+}
+.cs-stat-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--text-muted);
+}
+
+@media(max-width: 768px) {
+  .cs-grid { grid-template-columns: 1fr; }
+  .cs-left { border-right: none; border-bottom: 1px solid var(--border); }
+  .cs-header { flex-direction: column; align-items: flex-start; }
+  .cs-header-sub { text-align: left; }
+  .cs-stats { grid-template-columns: 1fr 1fr; }
+  .cs-stats .cs-stat:last-child { border-right: none; grid-column: span 2; border-top: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <nav class="nav">
+      <a href="#about">About</a>
+      <a href="#projects">Work</a>
+      <a href="#certifications">Certs</a>
+      <a href="#community">Community</a>
+      <a href="#research">Research</a>
+      <a href="#blog">Blog</a>
+      <a href="#connect">Connect</a>
+    </nav>
+  </div>
+</header>
+<div class="header-spacer"></div>
+
+<main>
+
+  <!-- HERO -->
+  <section class="container hero">
+    <h1 class="name">Chaitali Shekar</h1>
+    <p class="typewrap">Business System Analyst &amp; Strategy & Operations &middot; AI-Enabled Decision Making</p>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section-padding">
+    <div class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:80px;align-items:center;">
+      <img src="IMG_1814.jpeg" alt="Chaitali Shekar" style="width:100%;height:auto;border:1px solid var(--border);">
+      <div>
+       <h2 class="section-title">Turning Ambiguity into Action</h2>
+        <p style="font-size:1.05rem;margin-bottom:18px;color:var(--text-muted);line-height:1.8;">I’m an Engineering Management graduate from NC State, working at the intersection of business analytics, strategy, operations, and AI. I turn complex data and ambiguous problems into clear insights, structured decisions, and measurable business outcomes.</p>
+        <p style="font-size:1.05rem;margin-bottom:18px;color:var(--text-muted);line-height:1.8;">My approach blends analytical rigor with AI-enabled problem solving; uncovering root causes, identifying opportunities, improving processes, and translating insights into strategies that teams can act on.</p>
+        <p style="font-size:1.05rem;margin-bottom:28px;color:var(--text-muted);line-height:1.8;">But I believe the best decisions are both data-driven and human-centered. I lead with empathy, ask the right questions, and bring people and perspectives together to turn insight into meaningful action.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="section-padding">
+    <div class="container">
+      <span class="section-label"> Portfolio</span>
+      <h2 class="section-title">Selected Experience</h2>
+      <div class="projects-grid">
+       <div class="t-card">
+          <img src="G4-store.jpeg" alt="Google Merchandise Store Revenue Analytics" class="proj-media">
+          <div class="card-body">
+            <h3>Google Merchandise Store — Revenue Analytics</h3>
+            <p>Diagnosed revenue decline across 267K+ sessions using funnel analysis and statistical testing, identifying the key conversion leak and developing a recovery strategy with ~$305K annualized revenue potential.</p>
+            <a class="btn" href="GA4_Revenue_Decline_Portfolio_Site (2).html" target="_blank">View Dashboard</a>
+            <a class="btn" href="https://github.com/chaialishekar/Google-merchandise-store-Revenue-analytics" target="_blank">View on GitHub</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="netflix-pulse-card.png" alt="Netflix Churn" class="proj-media">
+          <div class="card-body">
+            <h3>Netflix Pulse — Churn Prediction</h3>
+            <p>Analyzed customer churn drivers and built a predictive ML model to identify at-risk users, translating behavioral insights into an AI-enabled retention strategy.</p>
+            <a class="btn" href="netflix-churn-dashboard.html" target="_blank">View Dashboard</a>
+            <a class="btn" href="https://github.com/chaialishekar/Netflix-Customer-Churn-Predictive-Retention-Analytics" target="_blank">View on GitHub</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="Wolfpark.jpg" alt="Wolf Park" class="proj-media">
+          <div class="card-body">
+            <h3>Smart Parking System</h3>
+            <p>Designed a smart parking solution backed by a normalized SQL database, translating parking and user requirements into data-driven allocation and availability workflows.</p>
+            <a class="btn" href="wolfpark-dashboard-v2.html" target="_blank" style="margin-right:8px;">View Dashboard</a>
+            <a class="btn" href="https://drive.google.com/file/d/1LkVsfAf9UOqN9sfOq2LPM291b41IH0v3/view?usp=drive_link" target="_blank">View</a>
+            <a class="btn" href="https://github.com/chaialishekar/Work-Park-Smart-Parking-System-" target="_blank">View on GitHub</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="Powerplant.jpg" alt="Energy" class="proj-media">
+          <div class="card-body">
+            <h3>Wolf Energy Power Plant</h3>
+            <p>Modeled CAPEX/OPEX &amp; ROI; built KPI frameworks for plant development and operations.</p>
+            <a class="btn" href="https://docs.google.com/presentation/d/1y-4Ar5eKKG15zpzWodLmCJ-sIz8cH1eO/edit?usp=sharing" target="_blank">View</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="your-new-image.jpg" alt="Customer Churn Retention" class="proj-media">
+          <div class="card-body">
+            <h3>Customer Churn Retention</h3>
+            <p>Identifying the customer churn rate using ML models to drive retention strategy.</p>
+            <a class="btn" href="https://docs.google.com/presentation/d/1lKcWXwY5LNV-a3Fz26VTdpHrGwoz5LKM/edit?usp=sharing" target="_blank">View</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="Real sales .jpg" alt="Real Sales LLC" class="proj-media">
+          <div class="card-body">
+            <h3>Real Sales LLC Blueprint</h3>
+            <p>Applied EVM and schedule optimization to identify cost and delivery risks, developing crashing and fast-tracking strategies that generated $607K (~24%) in projected savings.</p>
+            <a class="btn" href="https://docs.google.com/presentation/d/1UC0yQv7c0tixgO99FEG2llZUteRjqFxIS7S9m6C1dmg/edit?usp=sharing" target="_blank">View</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="uno retail.jpeg" alt="Uno-Retail" class="proj-media">
+          <div class="card-body">
+            <h3>Uno-Retail Platform</h3>
+            <p>Translated e-commerce requirements into project scope, milestones, and risk controls, reducing projected delay costs by 25% through proactive delivery planning.</p>
+            <a class="btn" href="https://docs.google.com/presentation/d/1WNpuP74CV0Z7wiNS5Q50X8BldZgGT6ao/edit?usp=sharing" target="_blank">View</a>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="NLP.jpg" alt="Data Science" class="proj-media">
+          <div class="card-body">
+            <h3>Business analyst</h3>
+            <p>Analyzed funnels across 8+ cohorts using SQL/Python, identifying Week 3 as the largest retention drop-off, Translated funnel insights into BRDs, user stories & UAT criteria across SDLC, contributing to 10.5% QoQ retention growth, Built the first Power BI layer across 3 data streams, shifting KPI reporting from monthly to weekly</p>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="cyware.jpg" alt="DevOps" class="proj-media">
+          <div class="card-body">
+            <h3>Operations — Cyware</h3>
+            <p>• Conducted 5 Whys RCA on deployment failures, identifying process gaps and reducing repeat incidents 35%. Redesigned Jira/Confluence workflows with engineering, standardizing processes and cutting onboarding time 10%. Standardized deployment SOPs across engineering and DevOps, closing a key gap identified in the RCA process </p>
+          </div>
+        </div>
+        <div class="t-card">
+          <img src="" alt="Global Data Center Compute" class="proj-media">
+          <div class="card-body">
+            <h3>Global Data Center Compute</h3>
+            <a class="btn" href="inventory-waste-project.html" target="_blank">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:70px;">
+        <span class="section-label">Career Path</span>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--deep-green);margin-bottom:0;">Experience Timeline</h3>
+        <div class="exp-timeline">
+          <div class="exp-item">
+            <div class="exp-dates">Jan 2026 &ndash; Present</div>
+            <div class="exp-content">
+              <h4>Business Analyst &mdash; Charles Schwab, USA</h4>
+              <ul>
+                <li>Translated Portfolio Insights and generative AI requirements into Jira user stories, functional requirements, acceptance criteria, business rules, use cases, and Confluence documentation across delivery teams.</li>
+                <li>Analyzed portfolio holdings, market news, research content, account data, and AI-generated insights using SQL, Excel, PivotTables, XLOOKUP, VLOOKUP, and Power BI for reconciliation validation activities.</li>
+                <li>Mapped portfolio data flows and reviewed REST APIs using Postman, Swagger/OpenAPI, and JSON, validating request-response structures, disclosures, timestamps, account fields, service statuses, exceptions, and testing.</li>
+                <li>Validated generative AI outputs for accuracy, relevance, explainability, disclosures, investment-advice boundaries, business rules, and AI governance requirements supporting compliant digital investment experiences for retail clients.</li>
+                <li>Coordinated Agile backlog refinement, sprint planning, stakeholder walkthroughs, UAT, defect triage, and release readiness through Jira and Confluence, strengthening requirement traceability and overall acceptance quality.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-dates">Oct 2023 &ndash; Jul 2024</div>
+            <div class="exp-content">
+              <h4>Business Analyst &mdash; Mphasis, India</h4>
+              <ul>
+                <li>Gathered digital account-opening and KYC requirements, creating Jira user stories and Confluence documentation for onboarding, document verification, compliance checks, approvals, exceptions, and customer process workflows.</li>
+                <li>Analyzed onboarding and KYC data using SQL and Excel, identifying missing fields, duplicate records, status mismatches, validation issues, and processing gaps across customer application workflows.</li>
+                <li>Mapped onboarding integrations using Visio, Postman, Swagger, REST APIs, and JSON, validating field mappings, service responses, exception scenarios, and downstream account-opening requirements with technical teams.</li>
+                <li>Coordinated UAT, Jira defect tracking, and payment reconciliation using SQL, Excel, ISO 20022, and Power BI, improving test coverage by 38% and exception identification 42%.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-dates">Mar 2023 &ndash; Sep 2023</div>
+            <div class="exp-content">
+              <h4>DevOps Intern &mdash; Cyware, India</h4>
+              <ul>
+                <li>Conducted 5 Whys root cause analysis on deployment failures, identified recurring process gaps, and implemented corrective actions that reduced repeat incidents by 35% across environments.</li>
+                <li>Collaborated with engineering teams to redesign Jira and Confluence workflows, standardized issue tracking and documentation practices, and reduced new team member onboarding time by 10%.</li>
+                <li>Developed standardized deployment SOPs using RCA findings, documented recurring failure scenarios and resolution steps, and created a reliable knowledge base for engineering support operations teams.</li>
+                <li>Supported release and deployment activities by reviewing Jira tickets, validating SOP compliance, coordinating issue resolution with engineers, and improving consistency across operational tasks and scheduled releases.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE PLAN -->
+  <section id="case-plan-feature" class="section-padding" style="background:#fff;border-bottom:none;">
+    <div class="container">
+      <div style="margin-bottom:56px;">
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:24px;flex-wrap:wrap;">
+          <span style="display:inline-block;padding:6px 14px;border:1px solid var(--text);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--deep-green);">Product Strategy</span>
+          <span style="display:inline-block;padding:6px 14px;border:1px solid var(--accent);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--accent);">Business Practicum Course</span>
+        </div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,54px);color:var(--deep-green);margin-bottom:18px;line-height:1.1;">Your Case Plan: Strategic Market Entry</h2>
+        <div style="width:80px;height:1px;background:var(--accent);margin-bottom:24px;"></div>
+        <p style="max-width:760px;font-size:1.1rem;color:var(--text-muted);line-height:1.7;">Directed multi-state research and data centralization to define the product roadmap for a legal-tech planning platform.</p>
+      </div>
+      <div class="projects-grid">
+        <div class="t-card" style="border:none;background:transparent;">
+          <img src="survey.webp" alt="500+ Surveys" class="proj-media" style="height:190px;">
+          <div class="card-body" style="padding:26px 0;">
+            <h3 style="font-size:1.05rem;text-transform:none;font-family:'Playfair Display',serif;font-weight:700;letter-spacing:0;">500+ Survey Responses</h3>
+            <p>Coordinated nationwide research across 20+ states, centralizing complex feedback into clean datasets.</p>
+          </div>
+        </div>
+        <div class="t-card" style="border:none;background:transparent;">
+          <img src="data_tracking.jpg" alt="Data Analysis" class="proj-media" style="height:190px;">
+          <div class="card-body" style="padding:26px 0;">
+            <h3 style="font-size:1.05rem;text-transform:none;font-family:'Playfair Display',serif;font-weight:700;letter-spacing:0;">Data Driven Decisions</h3>
+            <p>Transformed raw research into interactive Power BI dashboards to pinpoint high-growth market opportunities.</p>
+          </div>
+        </div>
+        <div class="t-card" style="border:none;background:transparent;">
+          <img src="Case Plan.jpg" alt="Market Strategy" class="proj-media" style="height:190px;">
+          <div class="card-body" style="padding:26px 0;">
+            <h3 style="font-size:1.05rem;text-transform:none;font-family:'Playfair Display',serif;font-weight:700;letter-spacing:0;">Market Entry Strategy</h3>
+            <p>Developed a strategic roadmap for product expansion, focusing on regulatory compliance and user demand.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section id="impact" class="section-padding">
+    <div class="container">
+      <span class="section-label">Academic Leadership</span>
+      <h2 class="section-title">Impact at NCSU</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <h4>IEEE Sharktank Winner</h4>
+          <p>Pitched an AI-integration idea to improve the current supply chain of Nexi-Logic, won the competition</p>
+        </div>
+        <div class="info-item">
+          <h4>MEM Executive Challenge</h4>
+          <p>Spring 2025 Participant; solving corporate strategy cases under executive mentorship.</p>
+        </div>
+        <div class="info-item">
+          <h4>Marketing Lead — Maitri</h4>
+          <p>Directing digital outreach for the GSO, engaging 500+ engineering students.</p>
+        </div>
+        <div class="info-item">
+          <h4>Starbucks Lead</h4>
+          <p>Managing high-volume campus operations and team workflows with inventory precision.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================
+       COMMUNITY & LEADERSHIP — redesigned
+       ============================================= -->
+  <section id="community">
+    <div class="container">
+
+      <!-- Section header -->
+      <div class="cs-header">
+        <div class="cs-header-left">
+          <span class="section-label">Community &amp; Leadership</span>
+          <h2 class="cs-header-title">My Motivation</h2>
+        </div>
+         <p class="cs-story">
+Before I understood empowerment as a concept, I experienced its absence.
+I saw ideas left unsaid and potential overlooked, not because it wasn’t there, but because the space didn’t always allow it.
+That stayed with me, and today, it drives how I lead, collaborate, and create opportunities for others in STEM.
+</p>
+      </div>
+
+      <!-- Main grid -->
+      <div class="cs-grid">
+
+        <!-- LEFT -->
+        <div class="cs-left">
+          <div class="cs-slideshow">
+            <img class="cs-slide" src="SWE Conference.jpg" alt="SWE Conference">
+            <img class="cs-slide" src="Team photo.jpg" alt="Team photo">
+            <div class="cs-overlay"></div>
+            <div class="cs-overlay-content">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span class="cs-slide-label">WE25 &middot; SWE Annual Conference</span>
+                <div class="cs-dots" id="csDots"></div>
+              </div>
+              <div class="cs-slide-bottom">
+                <p class="cs-slide-eyebrow">New Orleans, Louisiana</p>
+                <h3 class="cs-slide-title">Society of<br>Women Engineers</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="cs-desc">
+            <h4>SWE WE25 Conference</h4>
+            <p>Attended the Society of Women Engineers annual conference, connecting with thousands of women in STEM, exploring career development workshops, and building a network across engineering disciplines.</p>
+            <div style="margin-top:8px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="cs-right">
+
+          <div class="cs-card">
+            <span class="cs-card-label">NC State Chapter</span>
+            <h4 class="cs-card-title">Society of Women Engineers</h4>
+            <p>Active member of the NC State SWE chapter, participating in mentorship programs, technical workshops, and initiatives that support women entering engineering fields.</p>
+          </div>
+
+          <div class="cs-card">
+            <span class="cs-card-label">Global Community</span>
+            <h4 class="cs-card-title">Rewrite the Code</h4>
+            <p>Member of Rewrite the Code, a national community empowering women in tech through networking, scholarships, and opportunities with leading companies.</p>
+          </div>
+
+          <div class="cs-card-dark">
+            <span class="cs-card-label">Volunteering</span>
+            <h4 class="cs-card-title">U&amp;I — Conversational English</h4>
+            <p>Volunteer English tutor supporting visually impaired girls in building conversational fluency, fostering confidence, communication, and greater access to opportunity.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat-num">3+</div>
+          <div class="cs-stat-label">Organizations</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-num">500+</div>
+          <div class="cs-stat-label">Peers Reached</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat-num">20+</div>
+          <div class="cs-stat-label">States of Impact</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DIPLOMA -->
+  <section id="diploma" class="section-padding" style="background-color:var(--light-gray);">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:60px;align-items:center;">
+        <div>
+          <span class="section-label">Academic Milestone</span>
+          <h2 class="section-title">Master of Engineering Management</h2>
+          <div style="margin-bottom:28px;">
+            <p style="font-weight:800;color:var(--deep-green);font-size:1.1rem;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">Specialization: Analytics Track</p>
+            <p style="color:var(--text-muted);line-height:1.8;">Awarded by North Carolina State University. This track focuses on advanced statistical modeling, data-driven decision making, and engineering optimization to solve complex business challenges.</p>
+          </div>
+        </div>
+        <div style="position:relative;">
+          <div style="border:14px solid #fff;box-shadow:0 20px 50px rgba(0,0,0,0.1);background:#fff;transform:rotate(1.5deg);">
+            <img src="certificate.png" alt="NCSU Analytics Diploma" style="width:100%;height:auto;display:block;filter:grayscale(10%) contrast(1.08);">
+          </div>
+          <div style="position:absolute;bottom:-16px;right:-8px;background:var(--accent);color:#fff;padding:14px 22px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:2px;">Analytics Track</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section id="certifications" class="section-padding">
+    <div class="container">
+      <span class="section-label">Credentials</span>
+      <h2 class="section-title">Certifications</h2>
+      <div class="cert-grid">
+        <article class="cert-card">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img class="cert-logo" alt="PMI" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 48'><rect width='96' height='48' rx='8' fill='%23ffffff'/><text x='50%' y='58%' text-anchor='middle' font-family='Inter,Arial' font-size='22' fill='%231F1B57' font-weight='800'>PMI</text></svg>" />
+            <div><div class="cert-title">CAPM®</div><div class="cert-issuer">Project Management Institute</div></div>
+          </div>
+          <div class="cert-actions"><a class="btn" href="https://drive.google.com/file/d/1ZkN_xDg0SQbFwWP2_0IMxbdc5sMO5E9Q/view?usp=sharing" target="_blank">Verify</a></div>
+        </article>
+        <article class="cert-card">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img class="cert-logo" alt="Microsoft" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect width='48' height='48' rx='10' fill='%23f3f4f6'/><g transform='translate(8,8)'><rect width='14' height='14' fill='%23f25022'/><rect x='18' width='14' height='14' fill='%237fba00'/><rect y='18' width='14' height='14' fill='%2300a4ef'/><rect x='18' y='18' width='14' height='14' fill='%23ffb900'/></g></svg>" />
+            <div><div class="cert-title">Power BI Data Analyst Associate</div><div class="cert-issuer">Microsoft</div></div>
+          </div>
+          <div class="cert-actions"><a class="btn" href="https://www.linkedin.com/in/chaitalis19/details/certifications/" target="_blank">Verify</a></div>
+        </article>
+        <article class="cert-card">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img class="cert-logo" alt="LinkedIn" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 48'><rect width='96' height='48' rx='8' fill='%230A66C2'/><text x='50%' y='58%' text-anchor='middle' font-family='Inter,Arial' font-size='22' fill='%23ffffff' font-weight='800'>in</text></svg>" />
+            <div><div class="cert-title">Scrum Basics</div><div class="cert-issuer">LinkedIn Learning</div></div>
+          </div>
+          <div class="cert-actions"><a class="btn" href="https://drive.google.com/file/d/1W2EXpiQOJ04bgJ1mzoNNtKif6oHpn03E/view?usp=sharing" target="_blank">Verify</a></div>
+        </article>
+        <article class="cert-card">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img class="cert-logo" alt="LinkedIn" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 48'><rect width='96' height='48' rx='8' fill='%230A66C2'/><text x='50%' y='58%' text-anchor='middle' font-family='Inter,Arial' font-size='22' fill='%23ffffff' font-weight='800'>in</text></svg>" />
+            <div><div class="cert-title">Lean Six Sigma</div><div class="cert-issuer">LinkedIn Learning</div></div>
+          </div>
+          <div class="cert-actions"><a class="btn" href="https://drive.google.com/file/d/1JN4_0_Lt8h4Glrw5KG50VP6EPV-8kKys/view?usp=sharing" target="_blank">Verify</a></div>
+        </article>
+        <article class="cert-card">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img class="cert-logo" alt="IBM" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 48'><rect width='120' height='48' rx='8' fill='%23ffffff'/><g fill='%230052CB'><rect x='10' y='8' width='100' height='3'/><rect x='10' y='14' width='100' height='3'/><rect x='10' y='20' width='100' height='3'/><rect x='10' y='26' width='100' height='3'/><rect x='10' y='32' width='100' height='3'/><rect x='10' y='38' width='100' height='3'/></g></svg>" />
+            <div><div class="cert-title">What is Data Science?</div><div class="cert-issuer">IBM</div></div>
+          </div>
+          <div class="cert-actions"><a class="btn" href="https://drive.google.com/file/d/1z_o4EznH9jWUXvQ40obvzjQPHc1vvB-o/view?usp=sharing" target="_blank">Verify</a></div>
+        </article>
+        <article class="cert-card">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <img class="cert-logo" alt="Udemy" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 48'><rect width='96' height='48' rx='8' fill='%23a435f0'/><text x='50%' y='58%' text-anchor='middle' font-family='Inter,Arial' font-size='18' fill='%23ffffff' font-weight='800'>Udemy</text></svg>" />
+            <div><div class="cert-title">CAPM Exam Prep</div><div class="cert-issuer">Udemy</div></div>
+          </div>
+          <div class="cert-actions"><a class="btn" href="https://drive.google.com/file/d/1UBR8vyoMEtdO2yZZwauepTQA3lcbgPsB/view?usp=sharing" target="_blank">Verify</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESEARCH -->
+  <section id="research" class="section-padding">
+    <div class="container">
+      <div style="text-align:center;border:1px solid var(--border);padding:80px 40px;background:#fff;">
+        <span class="section-label">Academic Portal</span>
+        <h2 class="section-title" style="margin-bottom:16px;">Research &amp; Coursework</h2>
+        <p style="max-width:560px;margin:0 auto 28px;color:var(--text-muted);font-size:0.95rem;">A collection of technical papers and explorations within the NC State Engineering Management program.</p>
+        <a href="current-studies.html" class="btn">Explore Research Portal</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section id="blog" class="section-padding">
+    <div class="container">
+      <div style="text-align:center;border:1px solid var(--border);padding:80px 40px;background:#fff;">
+        <span class="section-label">Writing</span>
+        <h2 class="section-title" style="margin-bottom:16px;">Welcome to My Blog</h2>
+        <p style="max-width:560px;margin:0 auto 28px;color:var(--text-muted);font-size:0.95rem;">Thoughts on data, strategy, and building things at the intersection of analytics and business — published on Substack.</p>
+        <a href="https://YOUR-SUBSTACK-LINK.substack.com" target="_blank" class="btn">Read on Substack</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONNECT -->
+  <section id="connect" class="footer-connect">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:40px;">
+        <div>
+          <span class="section-label" style="color:var(--accent);">07 / Contact</span>
+          <h2 style="font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,64px);font-weight:800;line-height:1;margin-bottom:16px;letter-spacing:-1px;">Ready to<br>Collaborate?</h2>
+          <div class="social-links">
+            <a href="https://linkedin.com/in/chaitalis19" target="_blank">LinkedIn</a>
+            <a href="mailto:chaitalishekar@gmail.com">Email</a>
+          </div>
+        </div>
+        <div style="color:var(--accent);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:2px;">Based in Raleigh, NC</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">© 2026 Chaitali Shashi Shekar &middot; Built for Impact</div>
+</footer>
+
+<script>
+(function () {
+  var slides = document.querySelectorAll('.cs-slide');
+  var dotsWrap = document.getElementById('csDots');
+  if (!slides.length || !dotsWrap) return;
+
+  var current = 0;
+  var dots = [];
+
+  slides.forEach(function (_, i) {
+    var d = document.createElement('button');
+    d.className = 'cs-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.addEventListener('click', function () { goTo(i); });
+    dotsWrap.appendChild(d);
+    dots.push(d);
+  });
+
+  function goTo(n) {
+    slides[current].style.opacity = '0';
+    dots[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].style.opacity = '1';
+    dots[current].classList.add('active');
+  }
+
+  setInterval(function () { goTo(current + 1); }, 3800);
+})();
+</script>
+</body>
+</html>
