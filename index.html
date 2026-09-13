@@ -99,6 +99,16 @@ a { text-decoration: none; color: inherit; transition: 0.3s; }
 
 footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.35); background: var(--deep-green); border-top: 1px solid rgba(255,255,255,0.08); }
 
+/* EXPERIENCE TIMELINE */
+.exp-timeline { display: flex; flex-direction: column; gap: 0; margin-top: 40px; border-top: 1px solid var(--border); }
+.exp-item { display: grid; grid-template-columns: 160px 1fr; gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--border); }
+@media(max-width: 700px) { .exp-item { grid-template-columns: 1fr; gap: 8px; } }
+.exp-dates { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); }
+.exp-content { border-left: 2px solid var(--border); padding-left: 22px; }
+.exp-content h4 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--deep-green); margin-bottom: 10px; }
+.exp-content ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.exp-content li { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
 /* =============================================
    COMMUNITY SECTION — refined editorial style
    ============================================= */
@@ -316,7 +326,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
   <!-- HERO -->
   <section class="container hero">
     <h1 class="name">Chaitali Shekar</h1>
-    <p class="typewrap">Business Analyst &amp; Strategy & Operations &middot; AI-Enabled Decision Making</p>
+    <p class="typewrap">Business System Analyst &amp; Strategy & Operations &middot; AI-Enabled Decision Making</p>
   </section>
 
   <!-- ABOUT -->
@@ -325,7 +335,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
       <img src="IMG_1814.jpeg" alt="Chaitali Shekar" style="width:100%;height:auto;border:1px solid var(--border);">
       <div>
        <h2 class="section-title">Turning Ambiguity into Action</h2>
-        <p style="font-size:1.05rem;margin-bottom:18px;color:var(--text-muted);line-height:1.8;">I’m an Engineering Management graduate from NC State, working at the intersection of business analytics, strategy, operations, and AI. I turn complex data and ambiguous problems into clear insights, structured decisions, and measurable business outcomes.</p> 
+        <p style="font-size:1.05rem;margin-bottom:18px;color:var(--text-muted);line-height:1.8;">I’m an Engineering Management graduate from NC State, working at the intersection of business analytics, strategy, operations, and AI. I turn complex data and ambiguous problems into clear insights, structured decisions, and measurable business outcomes.</p>
         <p style="font-size:1.05rem;margin-bottom:18px;color:var(--text-muted);line-height:1.8;">My approach blends analytical rigor with AI-enabled problem solving; uncovering root causes, identifying opportunities, improving processes, and translating insights into strategies that teams can act on.</p>
         <p style="font-size:1.05rem;margin-bottom:28px;color:var(--text-muted);line-height:1.8;">But I believe the best decisions are both data-driven and human-centered. I lead with empathy, ask the right questions, and bring people and perspectives together to turn insight into meaningful action.</p>
       </div>
@@ -362,7 +372,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
             <h3>Smart Parking System</h3>
             <p>Designed a smart parking solution backed by a normalized SQL database, translating parking and user requirements into data-driven allocation and availability workflows.</p>
             <a class="btn" href="wolfpark-dashboard-v2.html" target="_blank" style="margin-right:8px;">View Dashboard</a>
-            <a class="btn" href="https://drive.google.com/file/d/1LkVsfAf9UOqN9sfOq2LPM291b41IH0v3/view?usp=drive_link" target="_blank">View Case</a>
+            <a class="btn" href="https://drive.google.com/file/d/1LkVsfAf9UOqN9sfOq2LPM291b41IH0v3/view?usp=drive_link" target="_blank">View</a>
             <a class="btn" href="https://github.com/chaialishekar/Work-Park-Smart-Parking-System-" target="_blank">View on GitHub</a>
           </div>
         </div>
@@ -371,7 +381,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
           <div class="card-body">
             <h3>Wolf Energy Power Plant</h3>
             <p>Modeled CAPEX/OPEX &amp; ROI; built KPI frameworks for plant development and operations.</p>
-            <a class="btn" href="https://docs.google.com/presentation/d/1y-4Ar5eKKG15zpzWodLmCJ-sIz8cH1eO/edit?usp=sharing" target="_blank">View Case</a>
+            <a class="btn" href="https://docs.google.com/presentation/d/1y-4Ar5eKKG15zpzWodLmCJ-sIz8cH1eO/edit?usp=sharing" target="_blank">View</a>
           </div>
         </div>
         <div class="t-card">
@@ -379,7 +389,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
           <div class="card-body">
             <h3>Customer Churn Retention</h3>
             <p>Identifying the customer churn rate using ML models to drive retention strategy.</p>
-            <a class="btn" href="https://docs.google.com/presentation/d/1lKcWXwY5LNV-a3Fz26VTdpHrGwoz5LKM/edit?usp=sharing" target="_blank">View Case</a>
+            <a class="btn" href="https://docs.google.com/presentation/d/1lKcWXwY5LNV-a3Fz26VTdpHrGwoz5LKM/edit?usp=sharing" target="_blank">View</a>
           </div>
         </div>
         <div class="t-card">
@@ -387,7 +397,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
           <div class="card-body">
             <h3>Real Sales LLC Blueprint</h3>
             <p>Applied EVM and schedule optimization to identify cost and delivery risks, developing crashing and fast-tracking strategies that generated $607K (~24%) in projected savings.</p>
-            <a class="btn" href="https://docs.google.com/presentation/d/1UC0yQv7c0tixgO99FEG2llZUteRjqFxIS7S9m6C1dmg/edit?usp=sharing" target="_blank">View Case</a>
+            <a class="btn" href="https://docs.google.com/presentation/d/1UC0yQv7c0tixgO99FEG2llZUteRjqFxIS7S9m6C1dmg/edit?usp=sharing" target="_blank">View</a>
           </div>
         </div>
         <div class="t-card">
@@ -395,7 +405,7 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
           <div class="card-body">
             <h3>Uno-Retail Platform</h3>
             <p>Translated e-commerce requirements into project scope, milestones, and risk controls, reducing projected delay costs by 25% through proactive delivery planning.</p>
-            <a class="btn" href="https://docs.google.com/presentation/d/1WNpuP74CV0Z7wiNS5Q50X8BldZgGT6ao/edit?usp=sharing" target="_blank">View Case</a>
+            <a class="btn" href="https://docs.google.com/presentation/d/1WNpuP74CV0Z7wiNS5Q50X8BldZgGT6ao/edit?usp=sharing" target="_blank">View</a>
           </div>
         </div>
         <div class="t-card">
@@ -416,7 +426,51 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
           <img src="" alt="Global Data Center Compute" class="proj-media">
           <div class="card-body">
             <h3>Global Data Center Compute</h3>
-            <a class="btn" href="inventory-waste-project.html" target="_blank">View Case</a>
+            <a class="btn" href="inventory-waste-project.html" target="_blank">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:70px;">
+        <span class="section-label">Career Path</span>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--deep-green);margin-bottom:0;">Experience Timeline</h3>
+        <div class="exp-timeline">
+          <div class="exp-item">
+            <div class="exp-dates">Jan 2026 &ndash; Present</div>
+            <div class="exp-content">
+              <h4>Business Analyst &mdash; Charles Schwab, USA</h4>
+              <ul>
+                <li>Translated Portfolio Insights and generative AI requirements into Jira user stories, functional requirements, acceptance criteria, business rules, use cases, and Confluence documentation across delivery teams.</li>
+                <li>Analyzed portfolio holdings, market news, research content, account data, and AI-generated insights using SQL, Excel, PivotTables, XLOOKUP, VLOOKUP, and Power BI for reconciliation validation activities.</li>
+                <li>Mapped portfolio data flows and reviewed REST APIs using Postman, Swagger/OpenAPI, and JSON, validating request-response structures, disclosures, timestamps, account fields, service statuses, exceptions, and testing.</li>
+                <li>Validated generative AI outputs for accuracy, relevance, explainability, disclosures, investment-advice boundaries, business rules, and AI governance requirements supporting compliant digital investment experiences for retail clients.</li>
+                <li>Coordinated Agile backlog refinement, sprint planning, stakeholder walkthroughs, UAT, defect triage, and release readiness through Jira and Confluence, strengthening requirement traceability and overall acceptance quality.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-dates">Oct 2023 &ndash; Jul 2024</div>
+            <div class="exp-content">
+              <h4>Business Analyst &mdash; Mphasis, India</h4>
+              <ul>
+                <li>Gathered digital account-opening and KYC requirements, creating Jira user stories and Confluence documentation for onboarding, document verification, compliance checks, approvals, exceptions, and customer process workflows.</li>
+                <li>Analyzed onboarding and KYC data using SQL and Excel, identifying missing fields, duplicate records, status mismatches, validation issues, and processing gaps across customer application workflows.</li>
+                <li>Mapped onboarding integrations using Visio, Postman, Swagger, REST APIs, and JSON, validating field mappings, service responses, exception scenarios, and downstream account-opening requirements with technical teams.</li>
+                <li>Coordinated UAT, Jira defect tracking, and payment reconciliation using SQL, Excel, ISO 20022, and Power BI, improving test coverage by 38% and exception identification 42%.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-dates">Mar 2023 &ndash; Sep 2023</div>
+            <div class="exp-content">
+              <h4>DevOps Intern &mdash; Cyware, India</h4>
+              <ul>
+                <li>Conducted 5 Whys root cause analysis on deployment failures, identified recurring process gaps, and implemented corrective actions that reduced repeat incidents by 35% across environments.</li>
+                <li>Collaborated with engineering teams to redesign Jira and Confluence workflows, standardized issue tracking and documentation practices, and reduced new team member onboarding time by 10%.</li>
+                <li>Developed standardized deployment SOPs using RCA findings, documented recurring failure scenarios and resolution steps, and created a reliable knowledge base for engineering support operations teams.</li>
+                <li>Supported release and deployment activities by reviewing Jira tickets, validating SOP compliance, coordinating issue resolution with engineers, and improving consistency across operational tasks and scheduled releases.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -427,8 +481,9 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
   <section id="case-plan-feature" class="section-padding" style="background:#fff;border-bottom:none;">
     <div class="container">
       <div style="margin-bottom:56px;">
-        <div style="display:flex;align-items:center;gap:15px;margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:24px;flex-wrap:wrap;">
           <span style="display:inline-block;padding:6px 14px;border:1px solid var(--text);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--deep-green);">Product Strategy</span>
+          <span style="display:inline-block;padding:6px 14px;border:1px solid var(--accent);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--accent);">Business Practicum Course</span>
         </div>
         <h2 style="font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,54px);color:var(--deep-green);margin-bottom:18px;line-height:1.1;">Your Case Plan: Strategic Market Entry</h2>
         <div style="width:80px;height:1px;background:var(--accent);margin-bottom:24px;"></div>
@@ -499,8 +554,8 @@ footer { padding: 36px 0; text-align: center; font-size: 9px; text-transform: up
           <h2 class="cs-header-title">My Motivation</h2>
         </div>
          <p class="cs-story">
-Before I understood empowerment as a concept, I experienced its absence. 
-I saw ideas left unsaid and potential overlooked, not because it wasn’t there, but because the space didn’t always allow it. 
+Before I understood empowerment as a concept, I experienced its absence.
+I saw ideas left unsaid and potential overlooked, not because it wasn’t there, but because the space didn’t always allow it.
 That stayed with me, and today, it drives how I lead, collaborate, and create opportunities for others in STEM.
 </p>
       </div>
